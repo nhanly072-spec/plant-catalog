@@ -4,20 +4,57 @@
   <meta charset="UTF-8" />
   <title>🌱 CATALOG CHỈ SỐ CÂY TRỒNG</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f2fff4; margin: 0; padding: 20px; }
-    h1 { text-align: center; color: #1b4332; margin-bottom: 30px; }
-    .container { max-width: 700px; margin: auto; background: #fff; padding: 25px;
-                 border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    select { padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; font-size: 16px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #ddd; }
-    th { background: #b7e4c7; }
-    tr:hover { background: #f1fdf2; }
-    .desc { font-style: italic; color: #555; margin-top: 15px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2fff4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #1b4332;
+      margin-bottom: 30px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    select {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #b7e4c7;
+    }
+    tr:hover {
+      background: #f1fdf2;
+    }
+    .desc {
+      font-style: italic;
+      color: #555;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
   <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
+
   <div class="container">
     <label for="plantSelect">Chọn loại cây:</label>
     <select id="plantSelect" onchange="showInfo()">
@@ -31,7 +68,10 @@
 
     <table id="infoTable">
       <thead>
-        <tr><th>Thông số</th><th>Giá trị phù hợp</th></tr>
+        <tr>
+          <th>Thông số</th>
+          <th>Giá trị phù hợp</th>
+        </tr>
       </thead>
       <tbody></tbody>
     </table>
@@ -48,8 +88,8 @@
           "Độ ẩm đất": "70 – 90%",
           "Ánh sáng": "Cao (trực tiếp)",
           "Độ pH đất": "5.5 – 6.5",
-          "Nước tưới": "Ngập nước (liên tục trong giai đoạn sinh trưởng)",
-        },
+          "Nước tưới": "Ngập nước (liên tục trong giai đoạn sinh trưởng)"
+        }
       },
       tomato: {
         desc: "Cà chua phát triển tốt trong điều kiện khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
@@ -58,8 +98,8 @@
           "Độ ẩm đất": "60 – 70%",
           "Ánh sáng": "6–8 giờ/ngày",
           "Độ pH đất": "6.0 – 6.8",
-          "Tưới nước": "Vừa phải, tránh úng rễ",
-        },
+          "Tưới nước": "Vừa phải, tránh úng rễ"
+        }
       },
       lettuce: {
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
@@ -68,8 +108,8 @@
           "Độ ẩm đất": "60 – 80%",
           "Ánh sáng": "Trung bình, tránh nắng gắt",
           "Độ pH đất": "6.0 – 7.0",
-          "Tưới nước": "Thường xuyên, giữ ẩm liên tục",
-        },
+          "Tưới nước": "Thường xuyên, giữ ẩm liên tục"
+        }
       },
       chili: {
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
@@ -78,8 +118,8 @@
           "Độ ẩm đất": "50 – 70%",
           "Ánh sáng": "Nhiều (trực tiếp)",
           "Độ pH đất": "6.0 – 6.8",
-          "Tưới nước": "Vừa phải, tránh ngập",
-        },
+          "Tưới nước": "Vừa phải, tránh ngập"
+        }
       },
       cucumber: {
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
@@ -88,8 +128,8 @@
           "Độ ẩm đất": "65 – 80%",
           "Ánh sáng": "6–8 giờ/ngày",
           "Độ pH đất": "6.0 – 7.0",
-          "Tưới nước": "Đều đặn, giữ ẩm vừa phải",
-        },
+          "Tưới nước": "Đều đặn, giữ ẩm vừa phải"
+        }
       },
       rose: {
         desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
@@ -98,23 +138,39 @@
           "Độ ẩm đất": "50 – 70%",
           "Ánh sáng": "Nhiều (trực tiếp)",
           "Độ pH đất": "6.0 – 6.8",
-          "Tưới nước": "2–3 lần/tuần, tránh úng",
-        },
-      },
+          "Tưới nước": "2–3 lần/tuần, tránh úng"
+        }
+      }
     };
 
     function showInfo() {
-      const plant = document.getElementById("plantSelect").value;
-      const info = plantInfo[plant];
+      const plantValue = document.getElementById("plantSelect").value;
+      const info = plantInfo[plantValue];
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
-      for (const [k, v] of Object.entries(info.data)) {
-        tbody.innerHTML += `<tr><td>${k}</td><td>${v}</td></tr>`;
+
+      if (!info) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="2" style="text-align:center;color:#777">
+              Không có dữ liệu cho loại cây này.
+            </td>
+          </tr>`;
+        document.getElementById("desc").innerText = "";
+        console.warn("Không tìm thấy dữ liệu cho:", plantValue);
+        return;
       }
+
+      for (const [key, value] of Object.entries(info.data)) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${key}</td><td>${value}</td>`;
+        tbody.appendChild(tr);
+      }
+
       document.getElementById("desc").innerText = info.desc;
     }
 
-    window.onload = showInfo;
+    document.addEventListener("DOMContentLoaded", showInfo);
   </script>
 </body>
 </html>
