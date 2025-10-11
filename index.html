@@ -26,6 +26,7 @@
       <option value="lettuce">🥬 Xà lách</option>
       <option value="chili">🌶️ Ớt</option>
       <option value="cucumber">🥒 Dưa leo</option>
+      <option value="rose">🌹 Hoa Hồng</option>
     </select>
 
     <table id="infoTable">
@@ -90,6 +91,16 @@
           "Tưới nước": "Đều đặn, giữ ẩm vừa phải",
         },
       },
+      rose: {
+        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
+        data: {
+          "Nhiệt độ lý tưởng": "25 – 32°C",
+          "Độ ẩm đất": "50 – 70%",
+          "Ánh sáng": "Nhiều (trực tiếp)",
+          "Độ pH đất": "6.0 – 6.8",
+          "Tưới nước": "2–3 lần/tuần, tránh úng",
+        },
+      },
     };
 
     function showInfo() {
@@ -98,8 +109,7 @@
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
       for (const [k, v] of Object.entries(info.data)) {
-        const row = `<tr><td>${k}</td><td>${v}</td></tr>`;
-        tbody.innerHTML += row;
+        tbody.innerHTML += `<tr><td>${k}</td><td>${v}</td></tr>`;
       }
       document.getElementById("desc").innerText = info.desc;
     }
