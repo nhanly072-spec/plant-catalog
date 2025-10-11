@@ -26,7 +26,7 @@
       <option value="lettuce">🥬 Xà lách</option>
       <option value="chili">🌶️ Ớt</option>
       <option value="cucumber">🥒 Dưa leo</option>
-      <option value="rose">🌹 Hoa Hồng</option> <!-- 🌹 thêm dòng này -->
+      <option value="rose">🌹 Hoa Hồng</option>
     </select>
 
     <table id="infoTable">
@@ -109,8 +109,7 @@
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
       for (const [k, v] of Object.entries(info.data)) {
-        const row = `<tr><td>${k}</td><td>${v}</td></tr>`;
-        tbody.innerHTML += row;
+        tbody.innerHTML += `<tr><td>${k}</td><td>${v}</td></tr>`;
       }
       document.getElementById("desc").innerText = info.desc;
     }
@@ -119,4 +118,3 @@
   </script>
 </body>
 </html>
-
