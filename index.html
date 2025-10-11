@@ -26,6 +26,7 @@
       <option value="lettuce">🥬 Xà lách</option>
       <option value="chili">🌶️ Ớt</option>
       <option value="cucumber">🥒 Dưa leo</option>
+      <option value="rose">🌹 Hoa Hồng</option> <!-- 🌹 thêm dòng này -->
     </select>
 
     <table id="infoTable">
@@ -90,18 +91,17 @@
           "Tưới nước": "Đều đặn, giữ ẩm vừa phải",
         },
       },
+      rose: {
+        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
+        data: {
+          "Nhiệt độ lý tưởng": "25 – 32°C",
+          "Độ ẩm đất": "50 – 70%",
+          "Ánh sáng": "Nhiều (trực tiếp)",
+          "Độ pH đất": "6.0 – 6.8",
+          "Tưới nước": "2–3 lần/tuần, tránh úng",
+        },
+      },
     };
-    <div class="plant">
-  <h2>🌹 Cây Hoa Hồng</h2>
-  <table border="1" cellspacing="0" cellpadding="6">
-    <tr><td><b>Nhiệt độ lý tưởng</b></td><td>25 – 32°C</td></tr>
-    <tr><td><b>Độ ẩm đất</b></td><td>50 – 70%</td></tr>
-    <tr><td><b>Ánh sáng</b></td><td>Nhiều (trực tiếp)</td></tr>
-    <tr><td><b>Độ pH đất</b></td><td>6.0 – 6.8</td></tr>
-    <tr><td><b>Tưới nước</b></td><td>2–3 lần/tuần, tránh úng</td></tr>
-  </table>
-</div>
-    }
 
     function showInfo() {
       const plant = document.getElementById("plantSelect").value;
@@ -119,3 +119,4 @@
   </script>
 </body>
 </html>
+
