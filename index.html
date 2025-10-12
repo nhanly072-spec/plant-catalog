@@ -59,9 +59,7 @@
       background: #b7e4c7;
       color: #083c2d;
     }
-    tr:hover {
-      background: #f5fff6;
-    }
+    tr:hover { background: #f5fff6; }
     .desc {
       font-style: italic;
       color: #444;
@@ -74,6 +72,13 @@
       display: inline-block !important;
     }
     .no-data { text-align:center; color:#777; }
+    .plant-title {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0d3b2e;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -86,6 +91,8 @@
       <label for="plantSelect">Hoặc chọn cây:</label>
       <select id="plantSelect" onchange="showInfo()"></select>
     </div>
+
+    <div id="plantTitle" class="plant-title"></div>
 
     <table id="infoTable" aria-live="polite">
       <thead>
@@ -103,6 +110,7 @@
   <script>
     const plantInfo = {
       rice: {
+        icon: "🌾",
         name: "Lúa",
         desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới.",
         lightDesc: "Cao (trực tiếp)",
@@ -115,6 +123,7 @@
         }
       },
       tomato: {
+        icon: "🍅",
         name: "Cà chua",
         desc: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
         lightDesc: "6–8 giờ/ngày",
@@ -127,6 +136,7 @@
         }
       },
       lettuce: {
+        icon: "🥬",
         name: "Xà lách",
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
         lightDesc: "Trung bình, tránh nắng gắt",
@@ -139,6 +149,7 @@
         }
       },
       chili: {
+        icon: "🌶️",
         name: "Ớt",
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
         lightDesc: "Nhiều (trực tiếp)",
@@ -151,6 +162,7 @@
         }
       },
       cucumber: {
+        icon: "🥒",
         name: "Dưa leo",
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
         lightDesc: "6–8 giờ/ngày",
@@ -163,6 +175,7 @@
         }
       },
       rose: {
+        icon: "🌹",
         name: "Hoa Hồng",
         desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
         lightDesc: "Nhiều (trực tiếp)",
@@ -176,20 +189,18 @@
       }
     };
 
-    // Khởi tạo danh sách cây ban đầu
     function initSelect() {
       const select = document.getElementById("plantSelect");
       select.innerHTML = "";
       Object.entries(plantInfo).forEach(([key, obj]) => {
         const opt = document.createElement("option");
         opt.value = key;
-        opt.textContent = obj.name;
+        opt.textContent = `${obj.icon} ${obj.name}`;
         select.appendChild(opt);
       });
       showInfo();
     }
 
-    // Lọc danh sách cây theo từ khóa gõ vào
     function filterPlants() {
       const keyword = document.getElementById("plantSearch").value.toLowerCase().trim();
       const select = document.getElementById("plantSelect");
@@ -199,36 +210,34 @@
         if (obj.name.toLowerCase().includes(keyword)) {
           const opt = document.createElement("option");
           opt.value = key;
-          opt.textContent = obj.name;
+          opt.textContent = `${obj.icon} ${obj.name}`;
           select.appendChild(opt);
         }
       });
 
-      // Nếu có kết quả, hiển thị loại đầu tiên
       if (select.options.length > 0) showInfo();
       else {
         document.querySelector("#infoTable tbody").innerHTML =
           `<tr><td class="no-data" colspan="2">Không tìm thấy cây phù hợp.</td></tr>`;
         document.getElementById("desc").innerText = "";
+        document.getElementById("plantTitle").innerHTML = "";
       }
     }
 
-    // Hiển thị thông tin cây
     function showInfo() {
       const select = document.getElementById("plantSelect");
       const plantValue = select.value;
       const info = plantInfo[plantValue];
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
-
       if (!info) return;
 
-      // Thêm hàng ánh sáng đầu tiên
+      document.getElementById("plantTitle").innerHTML = `${info.icon} ${info.name}`;
+
       const lightRow = document.createElement("tr");
       lightRow.innerHTML = `<td>Ánh sáng</td><td>${info.lightDesc} – <span class="lux">${info.lightLux}</span></td>`;
       tbody.appendChild(lightRow);
 
-      // Các thông số khác
       for (const [key, value] of Object.entries(info.data)) {
         const tr = document.createElement("tr");
         tr.innerHTML = `<td>${key}</td><td>${value}</td>`;
