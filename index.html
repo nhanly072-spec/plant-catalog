@@ -2,69 +2,61 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>🌱 CATALOG CHỈ SỐ CÂY TRỒNG</title>
+  <title>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f2fff4;
       margin: 0;
-      padding: 20px;
+      padding: 40px 20px;
     }
     h1 {
       text-align: center;
-      color: #1b4332;
-      margin-bottom: 30px;
+      color: #0d3b2e;
+      margin-bottom: 25px;
+      font-weight: 700;
     }
     .container {
-      max-width: 820px; /* rộng hơn chút để có chỗ cho lux */
+      max-width: 750px;
       margin: auto;
       background: #fff;
       padding: 25px;
       border-radius: 15px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
     select {
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
+      margin-left: 5px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      table-layout: auto;
     }
     th, td {
       text-align: left;
       padding: 10px;
       border-bottom: 1px solid #ddd;
-      vertical-align: top;
     }
     th {
       background: #b7e4c7;
+      color: #083c2d;
     }
     tr:hover {
-      background: #f1fdf2;
+      background: #f5fff6;
     }
     .desc {
       font-style: italic;
-      color: #555;
+      color: #444;
       margin-top: 15px;
     }
-
-    /* Tạo style nổi bật cho giá trị lux để dễ nhìn */
     .lux {
+      color: #166534;
       font-weight: 600;
-      color: #1b4332;
-      display: inline-block;
       margin-left: 6px;
-    }
-
-    /* Khi không có dữ liệu */
-    .no-data {
-      text-align: center;
-      color: #777;
     }
   </style>
 </head>
@@ -74,22 +66,19 @@
   <div class="container">
     <label for="plantSelect">Chọn loại cây:</label>
     <select id="plantSelect" onchange="showInfo()">
+      <option value="rose">🌹 Hoa Hồng</option>
       <option value="rice">🌾 Lúa</option>
       <option value="tomato">🍅 Cà chua</option>
       <option value="lettuce">🥬 Xà lách</option>
       <option value="chili">🌶️ Ớt</option>
       <option value="cucumber">🥒 Dưa leo</option>
-      <option value="rose">🌹 Hoa Hồng</option>
     </select>
 
-    <!-- Bảng giờ có cột riêng cho 'Ánh sáng (mô tả)' và 'Cường độ (lux)' -->
     <table id="infoTable">
       <thead>
         <tr>
           <th>Thông số</th>
           <th>Giá trị phù hợp</th>
-          <th>Ánh sáng (mô tả)</th>
-          <th>Cường độ (lux)</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -99,145 +88,84 @@
   </div>
 
   <script>
-    /**
-     * plantInfo: mỗi cây có:
-     *  - desc: mô tả ngắn
-     *  - data: mapping thông số -> giá trị (như trước)
-     *  - lightDesc: mô tả ánh sáng (ví dụ "Cao (trực tiếp)")
-     *  - lightLux: chuỗi cường độ lux (ví dụ "40.000 – 80.000 lux")
-     *
-     * Lý do tách: đảm bảo lux luôn hiển thị trong cột riêng, không bị "nuốt" khi
-     * value chứa dấu ngoặc hay ký tự đặc biệt.
-     */
     const plantInfo = {
+      rose: {
+        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
+        data: {
+          "Nhiệt độ lý tưởng": "25 – 32°C",
+          "Độ ẩm đất": "50 – 70%",
+          "Ánh sáng": "Nhiều (trực tiếp) – <span class='lux'>25.000 – 35.000 lux</span>",
+          "Độ pH đất": "6.0 – 6.8",
+          "Tưới nước": "2–3 lần/tuần, tránh úng"
+        }
+      },
       rice: {
         desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới.",
-        lightDesc: "Cao (trực tiếp)",
-        lightLux: "40.000 – 80.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "25 – 35°C",
           "Độ ẩm đất": "70 – 90%",
+          "Ánh sáng": "Cao (trực tiếp) – <span class='lux'>40.000 – 80.000 lux</span>",
           "Độ pH đất": "5.5 – 6.5",
-          "Nước tưới": "Ngập nước (liên tục trong giai đoạn sinh trưởng)"
+          "Nước tưới": "Ngập nước liên tục trong giai đoạn sinh trưởng"
         }
       },
       tomato: {
-        desc: "Cà chua phát triển tốt trong điều kiện khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
-        lightDesc: "6–8 giờ/ngày",
-        lightLux: "30.000 – 50.000 lux",
+        desc: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
         data: {
           "Nhiệt độ lý tưởng": "22 – 28°C",
           "Độ ẩm đất": "60 – 70%",
+          "Ánh sáng": "6–8 giờ/ngày – <span class='lux'>30.000 – 50.000 lux</span>",
           "Độ pH đất": "6.0 – 6.8",
           "Tưới nước": "Vừa phải, tránh úng rễ"
         }
       },
       lettuce: {
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
-        lightDesc: "Trung bình, tránh nắng gắt",
-        lightLux: "15.000 – 25.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "18 – 24°C",
           "Độ ẩm đất": "60 – 80%",
+          "Ánh sáng": "Trung bình, tránh nắng gắt – <span class='lux'>15.000 – 25.000 lux</span>",
           "Độ pH đất": "6.0 – 7.0",
           "Tưới nước": "Thường xuyên, giữ ẩm liên tục"
         }
       },
       chili: {
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
-        lightDesc: "Nhiều (trực tiếp)",
-        lightLux: "25.000 – 40.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "25 – 32°C",
           "Độ ẩm đất": "50 – 70%",
+          "Ánh sáng": "Nhiều (trực tiếp) – <span class='lux'>25.000 – 40.000 lux</span>",
           "Độ pH đất": "6.0 – 6.8",
           "Tưới nước": "Vừa phải, tránh ngập"
         }
       },
       cucumber: {
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
-        lightDesc: "6–8 giờ/ngày",
-        lightLux: "20.000 – 30.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "24 – 30°C",
           "Độ ẩm đất": "65 – 80%",
+          "Ánh sáng": "6–8 giờ/ngày – <span class='lux'>20.000 – 30.000 lux</span>",
           "Độ pH đất": "6.0 – 7.0",
           "Tưới nước": "Đều đặn, giữ ẩm vừa phải"
-        }
-      },
-      rose: {
-        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
-        lightDesc: "Nhiều (trực tiếp)",
-        lightLux: "25.000 – 35.000 lux",
-        data: {
-          "Nhiệt độ lý tưởng": "25 – 32°C",
-          "Độ ẩm đất": "50 – 70%",
-          "Độ pH đất": "6.0 – 6.8",
-          "Tưới nước": "2–3 lần/tuần, tránh úng"
         }
       }
     };
 
     function showInfo() {
-      const plantValue = document.getElementById("plantSelect").value;
-      const info = plantInfo[plantValue];
+      const plant = document.getElementById("plantSelect").value;
+      const info = plantInfo[plant];
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
 
-      if (!info) {
-        tbody.innerHTML = `
-          <tr>
-            <td class="no-data" colspan="4">Không có dữ liệu cho loại cây này.</td>
-          </tr>`;
-        document.getElementById("desc").innerText = "";
-        console.warn("Không tìm thấy dữ liệu cho:", plantValue);
-        return;
+      for (const [key, val] of Object.entries(info.data)) {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${key}</td><td>${val}</td>`;
+        tbody.appendChild(row);
       }
 
-      // Thêm hàng cho mỗi thông số trong info.data
-      for (const [key, value] of Object.entries(info.data)) {
-        const tr = document.createElement("tr");
-
-        // Ở cột ánh sáng và lux, mình chỉ hiển thị lần đầu tiên (dùng rowspan) để tránh lặp
-        // Tuy nhiên để đơn giản hiển thị mỗi hàng cùng cột ánh sáng/lux rỗng, mình sẽ
-        // chỉ thêm ánh sáng/lux ở hàng đầu tiên rồi để trống ở các hàng sau.
-        tr.innerHTML = `
-          <td>${key}</td>
-          <td>${value}</td>
-          <td></td>
-          <td></td>
-        `;
-        tbody.appendChild(tr);
-      }
-
-      // Nếu có ít nhất một hàng, chèn ánh sáng và lux vào hàng đầu (đầu tiên)
-      const firstRow = tbody.querySelector("tr");
-      if (firstRow) {
-        // Chèn ô ánh sáng và lux vào vị trí tương ứng
-        firstRow.cells[2].innerHTML = `${escapeHtml(info.lightDesc)}`;
-        firstRow.cells[3].innerHTML = `<span class="lux">${escapeHtml(info.lightLux)}</span>`;
-      } else {
-        // Nếu không có data fields (kịch bản hiếm), ta vẫn hiển thị 1 hàng ánh sáng/lux
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>—</td><td>—</td><td>${escapeHtml(info.lightDesc)}</td><td><span class="lux">${escapeHtml(info.lightLux)}</span></td>`;
-        tbody.appendChild(tr);
-      }
-
-      document.getElementById("desc").innerText = info.desc;
+      document.getElementById("desc").innerHTML = info.desc;
     }
 
-    // Hàm nhỏ để escape HTML (phòng trường hợp chuỗi chứa ký tự đặc biệt)
-    function escapeHtml(text) {
-      if (!text && text !== 0) return "";
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    // Gọi khi trang load
     document.addEventListener("DOMContentLoaded", showInfo);
   </script>
 </body>
