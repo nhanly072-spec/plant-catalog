@@ -24,13 +24,22 @@
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    label { display:inline-block; margin-bottom:8px; color:#0b3b2e; font-weight:600; }
-    select {
+    .input-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    label { color:#0b3b2e; font-weight:600; }
+    select, input[type="text"] {
       padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
-      margin-left: 8px;
+    }
+    input[type="text"] {
+      flex: 1;
+      min-width: 180px;
     }
     table {
       width: 100%;
@@ -44,7 +53,7 @@
       padding: 12px 14px;
       border-bottom: 1px solid #eee;
       vertical-align: top;
-      white-space: normal; /* cho phép xuống dòng */
+      white-space: normal;
     }
     th {
       background: #b7e4c7;
@@ -58,15 +67,12 @@
       color: #444;
       margin-top: 15px;
     }
-    /* Đảm bảo .lux hiển thị rõ, không bị display:none bởi CSS khác */
     .lux {
       color: #166534 !important;
       font-weight: 700 !important;
       margin-left: 6px;
       display: inline-block !important;
     }
-    /* An toàn: nếu có quy tắc khác ẩn span, ép hiển thị */
-    td span { display: inline !important; }
     .no-data { text-align:center; color:#777; }
   </style>
 </head>
@@ -74,15 +80,12 @@
   <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
 
   <div class="container">
-    <label for="plantSelect">Chọn loại cây:</label>
-    <select id="plantSelect" onchange="showInfo()">
-      <option value="rice">🌾 Lúa</option>
-      <option value="tomato">🍅 Cà chua</option>
-      <option value="lettuce">🥬 Xà lách</option>
-      <option value="chili">🌶️ Ớt</option>
-      <option value="cucumber">🥒 Dưa leo</option>
-      <option value="rose">🌹 Hoa Hồng</option>
-    </select>
+    <div class="input-row">
+      <label for="plantSearch">🔍 Tìm cây:</label>
+      <input type="text" id="plantSearch" placeholder="Nhập tên cây (ví dụ: hoa, ớt, dưa...)" oninput="filterPlants()">
+      <label for="plantSelect">Hoặc chọn cây:</label>
+      <select id="plantSelect" onchange="showInfo()"></select>
+    </div>
 
     <table id="infoTable" aria-live="polite">
       <thead>
@@ -100,6 +103,7 @@
   <script>
     const plantInfo = {
       rice: {
+        name: "Lúa",
         desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới.",
         lightDesc: "Cao (trực tiếp)",
         lightLux: "40.000 – 80.000 lux",
@@ -111,6 +115,7 @@
         }
       },
       tomato: {
+        name: "Cà chua",
         desc: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
         lightDesc: "6–8 giờ/ngày",
         lightLux: "30.000 – 50.000 lux",
@@ -122,6 +127,7 @@
         }
       },
       lettuce: {
+        name: "Xà lách",
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
         lightDesc: "Trung bình, tránh nắng gắt",
         lightLux: "15.000 – 25.000 lux",
@@ -133,6 +139,7 @@
         }
       },
       chili: {
+        name: "Ớt",
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
         lightDesc: "Nhiều (trực tiếp)",
         lightLux: "25.000 – 40.000 lux",
@@ -144,6 +151,7 @@
         }
       },
       cucumber: {
+        name: "Dưa leo",
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
         lightDesc: "6–8 giờ/ngày",
         lightLux: "20.000 – 30.000 lux",
@@ -155,6 +163,7 @@
         }
       },
       rose: {
+        name: "Hoa Hồng",
         desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
         lightDesc: "Nhiều (trực tiếp)",
         lightLux: "25.000 – 35.000 lux",
@@ -167,73 +176,69 @@
       }
     };
 
+    // Khởi tạo danh sách cây ban đầu
+    function initSelect() {
+      const select = document.getElementById("plantSelect");
+      select.innerHTML = "";
+      Object.entries(plantInfo).forEach(([key, obj]) => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = obj.name;
+        select.appendChild(opt);
+      });
+      showInfo();
+    }
+
+    // Lọc danh sách cây theo từ khóa gõ vào
+    function filterPlants() {
+      const keyword = document.getElementById("plantSearch").value.toLowerCase().trim();
+      const select = document.getElementById("plantSelect");
+      select.innerHTML = "";
+
+      Object.entries(plantInfo).forEach(([key, obj]) => {
+        if (obj.name.toLowerCase().includes(keyword)) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = obj.name;
+          select.appendChild(opt);
+        }
+      });
+
+      // Nếu có kết quả, hiển thị loại đầu tiên
+      if (select.options.length > 0) showInfo();
+      else {
+        document.querySelector("#infoTable tbody").innerHTML =
+          `<tr><td class="no-data" colspan="2">Không tìm thấy cây phù hợp.</td></tr>`;
+        document.getElementById("desc").innerText = "";
+      }
+    }
+
+    // Hiển thị thông tin cây
     function showInfo() {
-      const plantValue = document.getElementById("plantSelect").value;
+      const select = document.getElementById("plantSelect");
+      const plantValue = select.value;
       const info = plantInfo[plantValue];
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
 
-      if (!info) {
-        tbody.innerHTML = `<tr><td class="no-data" colspan="2">Không có dữ liệu cho loại cây này.</td></tr>`;
-        document.getElementById("desc").innerText = "";
-        console.warn("Không tìm thấy dữ liệu cho:", plantValue);
-        return;
-      }
+      if (!info) return;
 
-      console.log("DEBUG: plant selected =", plantValue);
-      console.log("DEBUG: info object =", info);
+      // Thêm hàng ánh sáng đầu tiên
+      const lightRow = document.createElement("tr");
+      lightRow.innerHTML = `<td>Ánh sáng</td><td>${info.lightDesc} – <span class="lux">${info.lightLux}</span></td>`;
+      tbody.appendChild(lightRow);
 
-      // Điền các thông số bình thường
+      // Các thông số khác
       for (const [key, value] of Object.entries(info.data)) {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${escapeHtml(key)}</td><td>${value}</td>`;
+        tr.innerHTML = `<td>${key}</td><td>${value}</td>`;
         tbody.appendChild(tr);
       }
 
-      // Tìm xem đã có hàng 'Ánh sáng' chưa (có thể người dùng giữ format cũ)
-      let lightRow = Array.from(tbody.querySelectorAll("tr"))
-        .find(r => r.cells[0] && r.cells[0].innerText.trim().toLowerCase() === "ánh sáng");
-
-      // Nếu chưa có, tạo hàng 'Ánh sáng' ngay dưới header
-      if (!lightRow) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td>Ánh sáng</td><td></td>`;
-        // chèn ở đầu sau header (đặt trước các hàng hiện có để dễ nhìn)
-        if (tbody.firstChild) tbody.insertBefore(tr, tbody.firstChild);
-        else tbody.appendChild(tr);
-        lightRow = tr;
-      }
-
-      // Bây giờ gắn lightDesc và lightLux vào ô phải
-      const lightDescText = info.lightDesc || "";
-      const lightLuxText = info.lightLux || "";
-
-      // Hiển thị log để bạn kiểm tra
-      console.log("DEBUG: lightDesc =", lightDescText);
-      console.log("DEBUG: lightLux =", lightLuxText);
-
-      // Gắn HTML an toàn: nếu lightLuxText có ký tự đặc biệt, vẫn hiển thị
-      const cell = lightRow.cells[1];
-      // Thêm bằng innerHTML để dùng span.lux — an toàn vì dữ liệu nội bộ, không từ user input
-      const joined = `${escapeHtml(lightDescText)}${lightLuxText ? ' – <span class="lux">' + escapeHtml(lightLuxText) + '</span>' : ''}`;
-      cell.innerHTML = joined;
-
-      // Mô tả ngắn
       document.getElementById("desc").innerText = info.desc;
     }
 
-    // Escape HTML cơ bản
-    function escapeHtml(text) {
-      if (text === null || text === undefined) return "";
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-    document.addEventListener("DOMContentLoaded", showInfo);
+    document.addEventListener("DOMContentLoaded", initSelect);
   </script>
 </body>
 </html>
