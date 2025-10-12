@@ -17,29 +17,34 @@
       font-weight: 700;
     }
     .container {
-      max-width: 750px;
+      max-width: 760px;
       margin: auto;
       background: #fff;
       padding: 25px;
       border-radius: 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
+    label { display:inline-block; margin-bottom:8px; color:#0b3b2e; font-weight:600; }
     select {
       padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
-      margin-left: 5px;
+      margin-left: 8px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      table-layout: auto;
+      word-break: break-word;
     }
     th, td {
       text-align: left;
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+      padding: 12px 14px;
+      border-bottom: 1px solid #eee;
+      vertical-align: top;
+      white-space: normal; /* cho phép xuống dòng */
     }
     th {
       background: #b7e4c7;
@@ -53,11 +58,16 @@
       color: #444;
       margin-top: 15px;
     }
+    /* Đảm bảo .lux hiển thị rõ, không bị display:none bởi CSS khác */
     .lux {
-      color: #166534;
-      font-weight: 600;
+      color: #166534 !important;
+      font-weight: 700 !important;
       margin-left: 6px;
+      display: inline-block !important;
     }
+    /* An toàn: nếu có quy tắc khác ẩn span, ép hiển thị */
+    td span { display: inline !important; }
+    .no-data { text-align:center; color:#777; }
   </style>
 </head>
 <body>
@@ -66,15 +76,15 @@
   <div class="container">
     <label for="plantSelect">Chọn loại cây:</label>
     <select id="plantSelect" onchange="showInfo()">
-      <option value="rose">🌹 Hoa Hồng</option>
       <option value="rice">🌾 Lúa</option>
       <option value="tomato">🍅 Cà chua</option>
       <option value="lettuce">🥬 Xà lách</option>
       <option value="chili">🌶️ Ớt</option>
       <option value="cucumber">🥒 Dưa leo</option>
+      <option value="rose">🌹 Hoa Hồng</option>
     </select>
 
-    <table id="infoTable">
+    <table id="infoTable" aria-live="polite">
       <thead>
         <tr>
           <th>Thông số</th>
@@ -89,81 +99,138 @@
 
   <script>
     const plantInfo = {
-      rose: {
-        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
-        data: {
-          "Nhiệt độ lý tưởng": "25 – 32°C",
-          "Độ ẩm đất": "50 – 70%",
-          "Ánh sáng": "Nhiều (trực tiếp) – <span class='lux'>25.000 – 35.000 lux</span>",
-          "Độ pH đất": "6.0 – 6.8",
-          "Tưới nước": "2–3 lần/tuần, tránh úng"
-        }
-      },
       rice: {
         desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới.",
+        lightDesc: "Cao (trực tiếp)",
+        lightLux: "40.000 – 80.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "25 – 35°C",
           "Độ ẩm đất": "70 – 90%",
-          "Ánh sáng": "Cao (trực tiếp) – <span class='lux'>40.000 – 80.000 lux</span>",
           "Độ pH đất": "5.5 – 6.5",
-          "Nước tưới": "Ngập nước liên tục trong giai đoạn sinh trưởng"
+          "Nước tưới": "Ngập nước (liên tục trong giai đoạn sinh trưởng)"
         }
       },
       tomato: {
         desc: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
+        lightDesc: "6–8 giờ/ngày",
+        lightLux: "30.000 – 50.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "22 – 28°C",
           "Độ ẩm đất": "60 – 70%",
-          "Ánh sáng": "6–8 giờ/ngày – <span class='lux'>30.000 – 50.000 lux</span>",
           "Độ pH đất": "6.0 – 6.8",
           "Tưới nước": "Vừa phải, tránh úng rễ"
         }
       },
       lettuce: {
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
+        lightDesc: "Trung bình, tránh nắng gắt",
+        lightLux: "15.000 – 25.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "18 – 24°C",
           "Độ ẩm đất": "60 – 80%",
-          "Ánh sáng": "Trung bình, tránh nắng gắt – <span class='lux'>15.000 – 25.000 lux</span>",
           "Độ pH đất": "6.0 – 7.0",
           "Tưới nước": "Thường xuyên, giữ ẩm liên tục"
         }
       },
       chili: {
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
+        lightDesc: "Nhiều (trực tiếp)",
+        lightLux: "25.000 – 40.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "25 – 32°C",
           "Độ ẩm đất": "50 – 70%",
-          "Ánh sáng": "Nhiều (trực tiếp) – <span class='lux'>25.000 – 40.000 lux</span>",
           "Độ pH đất": "6.0 – 6.8",
           "Tưới nước": "Vừa phải, tránh ngập"
         }
       },
       cucumber: {
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
+        lightDesc: "6–8 giờ/ngày",
+        lightLux: "20.000 – 30.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "24 – 30°C",
           "Độ ẩm đất": "65 – 80%",
-          "Ánh sáng": "6–8 giờ/ngày – <span class='lux'>20.000 – 30.000 lux</span>",
           "Độ pH đất": "6.0 – 7.0",
           "Tưới nước": "Đều đặn, giữ ẩm vừa phải"
+        }
+      },
+      rose: {
+        desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
+        lightDesc: "Nhiều (trực tiếp)",
+        lightLux: "25.000 – 35.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "25 – 32°C",
+          "Độ ẩm đất": "50 – 70%",
+          "Độ pH đất": "6.0 – 6.8",
+          "Tưới nước": "2–3 lần/tuần, tránh úng"
         }
       }
     };
 
     function showInfo() {
-      const plant = document.getElementById("plantSelect").value;
-      const info = plantInfo[plant];
+      const plantValue = document.getElementById("plantSelect").value;
+      const info = plantInfo[plantValue];
       const tbody = document.querySelector("#infoTable tbody");
       tbody.innerHTML = "";
 
-      for (const [key, val] of Object.entries(info.data)) {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${key}</td><td>${val}</td>`;
-        tbody.appendChild(row);
+      if (!info) {
+        tbody.innerHTML = `<tr><td class="no-data" colspan="2">Không có dữ liệu cho loại cây này.</td></tr>`;
+        document.getElementById("desc").innerText = "";
+        console.warn("Không tìm thấy dữ liệu cho:", plantValue);
+        return;
       }
 
-      document.getElementById("desc").innerHTML = info.desc;
+      console.log("DEBUG: plant selected =", plantValue);
+      console.log("DEBUG: info object =", info);
+
+      // Điền các thông số bình thường
+      for (const [key, value] of Object.entries(info.data)) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${escapeHtml(key)}</td><td>${value}</td>`;
+        tbody.appendChild(tr);
+      }
+
+      // Tìm xem đã có hàng 'Ánh sáng' chưa (có thể người dùng giữ format cũ)
+      let lightRow = Array.from(tbody.querySelectorAll("tr"))
+        .find(r => r.cells[0] && r.cells[0].innerText.trim().toLowerCase() === "ánh sáng");
+
+      // Nếu chưa có, tạo hàng 'Ánh sáng' ngay dưới header
+      if (!lightRow) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>Ánh sáng</td><td></td>`;
+        // chèn ở đầu sau header (đặt trước các hàng hiện có để dễ nhìn)
+        if (tbody.firstChild) tbody.insertBefore(tr, tbody.firstChild);
+        else tbody.appendChild(tr);
+        lightRow = tr;
+      }
+
+      // Bây giờ gắn lightDesc và lightLux vào ô phải
+      const lightDescText = info.lightDesc || "";
+      const lightLuxText = info.lightLux || "";
+
+      // Hiển thị log để bạn kiểm tra
+      console.log("DEBUG: lightDesc =", lightDescText);
+      console.log("DEBUG: lightLux =", lightLuxText);
+
+      // Gắn HTML an toàn: nếu lightLuxText có ký tự đặc biệt, vẫn hiển thị
+      const cell = lightRow.cells[1];
+      // Thêm bằng innerHTML để dùng span.lux — an toàn vì dữ liệu nội bộ, không từ user input
+      const joined = `${escapeHtml(lightDescText)}${lightLuxText ? ' – <span class="lux">' + escapeHtml(lightLuxText) + '</span>' : ''}`;
+      cell.innerHTML = joined;
+
+      // Mô tả ngắn
+      document.getElementById("desc").innerText = info.desc;
+    }
+
+    // Escape HTML cơ bản
+    function escapeHtml(text) {
+      if (text === null || text === undefined) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
     document.addEventListener("DOMContentLoaded", showInfo);
