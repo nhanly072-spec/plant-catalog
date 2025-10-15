@@ -11,7 +11,7 @@
       padding: 40px 20px;
     }
 
-    /* ✅ Giúp hiển thị emoji rõ nét và đồng nhất */
+    /* ✅ Hiển thị emoji rõ nét và đồng nhất */
     body, select, option, input, button, h1, td, th, p {
       font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI', sans-serif;
     }
@@ -118,6 +118,7 @@
       rice: {
         icon: "🌾",
         name: "Lúa",
+        scientificName: "Oryza sativa",
         desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới.",
         lightDesc: "Cao (trực tiếp)",
         lightLux: "40.000 – 80.000 lux",
@@ -131,6 +132,7 @@
       tomato: {
         icon: "🍅",
         name: "Cà chua",
+        scientificName: "Solanum lycopersicum",
         desc: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp, nhiều dinh dưỡng.",
         lightDesc: "6–8 giờ/ngày",
         lightLux: "30.000 – 50.000 lux",
@@ -144,6 +146,7 @@
       lettuce: {
         icon: "🥬",
         name: "Xà lách",
+        scientificName: "Lactuca sativa",
         desc: "Xà lách ưa mát, phát triển nhanh, thích hợp khí hậu ẩm nhẹ và ánh sáng vừa phải.",
         lightDesc: "Trung bình, tránh nắng gắt",
         lightLux: "15.000 – 25.000 lux",
@@ -157,6 +160,7 @@
       chili: {
         icon: "🌶️",
         name: "Ớt",
+        scientificName: "Capsicum annuum",
         desc: "Ớt cần nhiều ánh sáng và nhiệt độ cao, thích hợp vùng khí hậu nhiệt đới.",
         lightDesc: "Nhiều (trực tiếp)",
         lightLux: "25.000 – 40.000 lux",
@@ -170,6 +174,7 @@
       cucumber: {
         icon: "🥒",
         name: "Dưa leo",
+        scientificName: "Cucumis sativus",
         desc: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.",
         lightDesc: "6–8 giờ/ngày",
         lightLux: "20.000 – 30.000 lux",
@@ -183,6 +188,7 @@
       rose: {
         icon: "🌹",
         name: "Hoa hồng",
+        scientificName: "Rosa spp.",
         desc: "Hoa hồng ưa nắng, thích hợp đất tơi xốp, thoát nước tốt và giàu dinh dưỡng.",
         lightDesc: "Nhiều (trực tiếp)",
         lightLux: "25.000 – 35.000 lux",
@@ -193,71 +199,69 @@
           "Tưới nước": "2–3 lần/tuần, tránh úng"
         }
       },
-
-      /* 🌿 CÁC CÂY MỚI THÊM DƯỚI ĐÂY */
       airplant: {
-        icon: "🌬️",
+        icon: "🌿",
         name: "Cây không khí",
-        desc: "Cây không khí (Tillandsia) không cần đất, hấp thu độ ẩm và dinh dưỡng từ không khí, rất dễ chăm sóc.",
+        scientificName: "Tillandsia spp.",
+        desc: "Không cần đất, hấp thu độ ẩm và dưỡng chất từ không khí, thích nơi thoáng và có ánh sáng tán xạ.",
         lightDesc: "Ánh sáng gián tiếp",
         lightLux: "10.000 – 20.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "18 – 30°C",
-          "Độ ẩm không khí": "50 – 80%",
-          "Tưới nước": "Phun sương 2–3 lần/tuần",
-          "Đặc điểm": "Không cần đất, thoáng gió"
+          "Độ ẩm không khí": "50 – 70%",
+          "Tưới nước": "Phun sương 2–3 lần/tuần"
         }
       },
       dendrobium: {
         icon: "🌸",
         name: "Phong lan Dendrobium",
-        desc: "Phong lan Dendrobium ưa sáng, cần thông thoáng và độ ẩm cao, dễ trồng và ra hoa quanh năm.",
-        lightDesc: "Ánh sáng tán xạ",
+        scientificName: "Dendrobium spp.",
+        desc: "Ưa sáng nhẹ, thoáng gió, không chịu úng, thích hợp trồng treo.",
+        lightDesc: "Sáng nhẹ, thoáng khí",
         lightLux: "15.000 – 25.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "20 – 30°C",
           "Độ ẩm không khí": "60 – 80%",
-          "Tưới nước": "Hằng ngày khi khô, giảm tưới mùa nghỉ",
-          "Độ pH giá thể": "5.5 – 6.5"
+          "Tưới nước": "Mỗi ngày 1 lần (mùa nóng), giảm mùa mưa"
         }
       },
       phalaenopsis: {
         icon: "💮",
         name: "Phong lan Hồ Điệp",
-        desc: "Lan Hồ Điệp cần ánh sáng nhẹ, môi trường ẩm và thoáng khí, hoa bền đẹp thích hợp trưng bày trong nhà.",
-        lightDesc: "Ánh sáng yếu – trung bình",
-        lightLux: "8.000 – 15.000 lux",
+        scientificName: "Phalaenopsis spp.",
+        desc: "Ưa mát, tránh nắng trực tiếp, thích hợp trong nhà có ánh sáng khuếch tán.",
+        lightDesc: "Ánh sáng khuếch tán",
+        lightLux: "10.000 – 15.000 lux",
         data: {
-          "Nhiệt độ lý tưởng": "22 – 28°C",
+          "Nhiệt độ lý tưởng": "18 – 28°C",
           "Độ ẩm không khí": "60 – 80%",
-          "Tưới nước": "2–3 lần/tuần, tránh đọng nước",
-          "Độ pH giá thể": "5.5 – 6.5"
+          "Tưới nước": "2–3 lần/tuần"
         }
       },
-      birdnestfern: {
+      asplenium: {
         icon: "🌿",
         name: "Dương xỉ tổ chim",
-        desc: "Dương xỉ tổ chim là cây ưa ẩm, bóng râm, thường dùng trang trí nội thất hoặc nơi râm mát.",
+        scientificName: "Asplenium nidus",
+        desc: "Ưa bóng, độ ẩm cao, thích hợp trong nhà hoặc nơi râm mát.",
         lightDesc: "Ánh sáng tán xạ",
         lightLux: "5.000 – 15.000 lux",
         data: {
-          "Nhiệt độ lý tưởng": "18 – 28°C",
-          "Độ ẩm không khí": "70 – 90%",
-          "Tưới nước": "Giữ ẩm đất, không để úng",
-          "Độ pH đất": "5.5 – 6.5"
+          "Nhiệt độ lý tưởng": "20 – 28°C",
+          "Độ ẩm đất": "60 – 80%",
+          "Tưới nước": "Giữ ẩm đều, không để úng"
         }
       },
       cattleya: {
         icon: "🌼",
         name: "Phong lan Cattleya",
-        desc: "Phong lan Cattleya có hoa to và rực rỡ, cần nhiều ánh sáng và không khí lưu thông tốt.",
-        lightDesc: "Ánh sáng mạnh, tán xạ",
-        lightLux: "20.000 – 30.000 lux",
+        scientificName: "Cattleya spp.",
+        desc: "Thích hợp nơi có ánh sáng mạnh, thoáng gió, cần nhiều ẩm nhưng không chịu ngập.",
+        lightDesc: "Sáng nhiều, thoáng khí",
+        lightLux: "25.000 – 35.000 lux",
         data: {
           "Nhiệt độ lý tưởng": "22 – 32°C",
-          "Độ ẩm không khí": "60 – 80%",
-          "Tưới nước": "3–4 lần/tuần, giảm tưới khi nghỉ",
-          "Độ pH giá thể": "5.5 – 6.5"
+          "Độ ẩm không khí": "60 – 70%",
+          "Tưới nước": "2–3 lần/tuần, sáng sớm"
         }
       }
     };
@@ -307,6 +311,12 @@
 
       document.getElementById("plantTitle").innerHTML = `${info.icon} ${info.name}`;
 
+      // 🧬 Tên khoa học
+      const sciRow = document.createElement("tr");
+      sciRow.innerHTML = `<td>Tên khoa học</td><td><i>${info.scientificName}</i></td>`;
+      tbody.appendChild(sciRow);
+
+      // ☀️ Ánh sáng
       const lightRow = document.createElement("tr");
       lightRow.innerHTML = `<td>Ánh sáng</td><td>${info.lightDesc} – <span class="lux">${info.lightLux}</span></td>`;
       tbody.appendChild(lightRow);
