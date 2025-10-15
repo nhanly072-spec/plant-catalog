@@ -18,8 +18,8 @@
     }
     .container {
       background: white;
-      width: 80%;
-      max-width: 700px;
+      width: 85%;
+      max-width: 720px;
       margin: 30px auto;
       padding: 20px 30px;
       border-radius: 16px;
@@ -44,6 +44,7 @@
       font-size: 16px;
       border-radius: 6px;
       border: 1px solid #ccc;
+      font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI', sans-serif;
     }
     .search-bar {
       margin: 15px 0;
@@ -59,6 +60,7 @@
 </head>
 <body>
   <h1>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
+
   <div class="container">
     <div class="search-bar">
       🔍 Tìm cây: 
@@ -83,25 +85,25 @@
 
   <script>
     const plants = {
-      "Lúa 🌾": {
+      "🌾 Lúa": {
         name: "Lúa",
         emoji: "🌾",
         sci: "Oryza sativa",
         data: [
-          ["Ánh sáng", "Nhiều, 25.000–35.000 lux"],
+          ["Ánh sáng", "Nhiều – 25.000–35.000 lux"],
           ["Nhiệt độ lý tưởng", "20–35°C"],
           ["Độ ẩm đất", "60–90%"],
           ["Độ pH đất", "5.5–6.5"],
-          ["Tưới nước", "Liên tục, giữ ngập nhẹ"],
+          ["Tưới nước", "Giữ ngập nhẹ thường xuyên"],
         ],
         note: "Lúa ưa khí hậu nóng ẩm, cần nhiều nước trong suốt giai đoạn sinh trưởng."
       },
-      "Cà chua 🍅": {
+      "🍅 Cà chua": {
         name: "Cà chua",
         emoji: "🍅",
         sci: "Solanum lycopersicum",
         data: [
-          ["Ánh sáng", "Nhiều, 25.000–40.000 lux"],
+          ["Ánh sáng", "Nhiều – 25.000–40.000 lux"],
           ["Nhiệt độ lý tưởng", "22–28°C"],
           ["Độ ẩm đất", "60–80%"],
           ["Độ pH đất", "6.0–6.8"],
@@ -109,12 +111,12 @@
         ],
         note: "Cà chua cần ánh sáng mạnh và đất thoát nước tốt để ra quả đều."
       },
-      "Xà lách 🥬": {
+      "🥬 Xà lách": {
         name: "Xà lách",
         emoji: "🥬",
         sci: "Lactuca sativa",
         data: [
-          ["Ánh sáng", "Vừa, 15.000–25.000 lux"],
+          ["Ánh sáng", "Vừa – 15.000–25.000 lux"],
           ["Nhiệt độ lý tưởng", "15–25°C"],
           ["Độ ẩm đất", "65–85%"],
           ["Độ pH đất", "6.0–7.0"],
@@ -122,12 +124,12 @@
         ],
         note: "Xà lách phát triển tốt trong môi trường mát và ẩm."
       },
-      "Ớt 🌶️": {
+      "🌶️ Ớt": {
         name: "Ớt",
         emoji: "🌶️",
         sci: "Capsicum annuum",
         data: [
-          ["Ánh sáng", "Nhiều, 25.000–40.000 lux"],
+          ["Ánh sáng", "Nhiều – 25.000–40.000 lux"],
           ["Nhiệt độ lý tưởng", "22–32°C"],
           ["Độ ẩm đất", "65–85%"],
           ["Độ pH đất", "6.0–6.8"],
@@ -135,25 +137,25 @@
         ],
         note: "Ớt cần nhiều ánh sáng và đất thoát nước tốt để tránh úng rễ."
       },
-      "Dưa leo 🥒": {
+      "🥒 Dưa leo": {
         name: "Dưa leo",
         emoji: "🥒",
         sci: "Cucumis sativus",
         data: [
-          ["Ánh sáng", "Nhiều, 20.000–35.000 lux"],
+          ["Ánh sáng", "Nhiều – 20.000–35.000 lux"],
           ["Nhiệt độ lý tưởng", "25–30°C"],
           ["Độ ẩm đất", "70–90%"],
           ["Độ pH đất", "5.5–6.5"],
-          ["Tưới nước", "Thường xuyên, giữ ẩm liên tục"],
+          ["Tưới nước", "Giữ ẩm liên tục, tránh khô hạn"],
         ],
         note: "Dưa leo cần ánh sáng tốt và độ ẩm cao để phát triển đều."
       },
-      "Phong lan Hồ Điệp 🌸": {
+      "🌸 Phong lan Hồ Điệp": {
         name: "Phong lan Hồ Điệp",
         emoji: "🌸",
         sci: "Phalaenopsis spp.",
         data: [
-          ["Ánh sáng", "Gián tiếp, 10.000–20.000 lux"],
+          ["Ánh sáng", "Gián tiếp – 10.000–20.000 lux"],
           ["Nhiệt độ lý tưởng", "18–28°C"],
           ["Độ ẩm không khí", "60–80%"],
           ["Độ pH giá thể", "5.5–6.5"],
@@ -163,44 +165,48 @@
       }
     };
 
-    // Gán danh sách cây vào dropdown
     const plantSelect = document.getElementById("plantSelect");
-    for (let key in plants) {
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = key;
-      plantSelect.appendChild(option);
-    }
+    const searchBox = document.getElementById("searchBox");
 
-    const showPlant = (key) => {
+    // Thêm danh sách cây vào dropdown
+    Object.keys(plants).forEach(k => {
+      const opt = document.createElement("option");
+      opt.value = k;
+      opt.textContent = k;
+      plantSelect.appendChild(opt);
+    });
+
+    function showPlant(key) {
       const p = plants[key];
       document.getElementById("emoji").textContent = p.emoji;
       document.getElementById("plantName").textContent = p.name;
       document.getElementById("scientificName").textContent = p.sci;
-      document.getElementById("plantData").innerHTML = p.data.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join("");
+      document.getElementById("plantData").innerHTML = p.data
+        .map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`)
+        .join("");
       document.getElementById("note").textContent = p.note;
-    };
+    }
 
-    // Khi chọn cây
+    // Khi chọn cây từ dropdown
     plantSelect.addEventListener("change", e => showPlant(e.target.value));
 
-    // Tìm cây theo tên
-    document.getElementById("searchBox").addEventListener("input", e => {
-      const text = e.target.value.toLowerCase();
-      const found = Object.keys(plants).find(k => k.toLowerCase().includes(text));
-      if (found) {
-        plantSelect.value = found;
-        showPlant(found);
+    // Khi gõ tìm cây
+    searchBox.addEventListener("input", e => {
+      const txt = e.target.value.toLowerCase();
+      const match = Object.keys(plants).find(k => k.toLowerCase().includes(txt));
+      if (match) {
+        plantSelect.value = match;
+        showPlant(match);
       }
     });
 
-    // Khi mở web: tự chọn ngẫu nhiên 1 cây
-    window.onload = () => {
+    // Khi load trang -> chọn ngẫu nhiên 1 cây
+    window.addEventListener("DOMContentLoaded", () => {
       const keys = Object.keys(plants);
-      const randomPlant = keys[Math.floor(Math.random() * keys.length)];
-      plantSelect.value = randomPlant;
-      showPlant(randomPlant);
-    };
+      const randKey = keys[Math.floor(Math.random() * keys.length)];
+      plantSelect.value = randKey;
+      showPlant(randKey);
+    });
   </script>
 </body>
 </html>
