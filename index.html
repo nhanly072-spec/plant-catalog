@@ -5,7 +5,7 @@
   <title>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
   <style>
     body {
-      font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI Emoji', 'Segoe UI', sans-serif;
       background: #f2fff4;
       margin: 0;
       padding: 40px 20px;
@@ -29,70 +29,63 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      position: relative;
     }
     label { color:#0b3b2e; font-weight:600; }
-    input[type="text"] {
-      flex: 1;
-      min-width: 220px;
+    select, input[type="text"] {
       padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 16px;
     }
-    ul#suggestions {
-      list-style: none;
-      position: absolute;
-      top: 60px;
-      left: 0;
-      right: 0;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 0;
-      margin: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 10;
-    }
-    ul#suggestions li {
-      padding: 10px 14px;
-      cursor: pointer;
-    }
-    ul#suggestions li:hover {
-      background: #d1fae5;
+    input[type="text"] {
+      flex: 1;
+      min-width: 180px;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      table-layout: auto;
     }
     th, td {
       text-align: left;
       padding: 12px 14px;
       border-bottom: 1px solid #eee;
-      transition: background 0.3s;
-    }
-    tr:hover td {
-      background: #e6ffec;
+      transition: background 0.2s;
     }
     th {
       background: #b7e4c7;
       color: #083c2d;
+    }
+    tr:hover td {
+      background: #e6f9ee;
     }
     .desc {
       font-style: italic;
       color: #444;
       margin-top: 15px;
     }
+    .lux {
+      color: #166534;
+      font-weight: 700;
+      margin-left: 6px;
+      display: inline-block;
+    }
+    .no-data { text-align:center; color:#777; }
     .plant-title {
       text-align: center;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: 700;
       color: #0d3b2e;
       margin-top: 15px;
     }
-    .lux { color: #166534; font-weight: bold; }
+    .sci-name {
+      text-align: center;
+      font-size: 1rem;
+      color: #555;
+      font-style: italic;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -101,13 +94,15 @@
   <div class="container">
     <div class="input-row">
       <label for="plantSearch">🔍 Tìm cây:</label>
-      <input type="text" id="plantSearch" placeholder="Nhập tên cây..." oninput="showSuggestions()">
-      <ul id="suggestions"></ul>
+      <input type="text" id="plantSearch" placeholder="Nhập tên cây (hoa, ớt, lan...)" oninput="filterPlants()">
+      <label for="plantSelect">Hoặc chọn cây:</label>
+      <select id="plantSelect" onchange="showInfo()"></select>
     </div>
 
     <div id="plantTitle" class="plant-title"></div>
+    <div id="sciName" class="sci-name"></div>
 
-    <table id="infoTable">
+    <table id="infoTable" aria-live="polite">
       <thead>
         <tr>
           <th>Thông số</th>
@@ -122,65 +117,228 @@
 
   <script>
     const plantInfo = {
-      rice: { icon:"🌾", name:"Lúa", sci:"Oryza sativa", desc:"Lúa cần môi trường ấm, ẩm cao, nhiều ánh sáng.", light:"Cao (trực tiếp)", lux:"40.000–80.000", data:{
-        "Nhiệt độ lý tưởng":"25–35°C","Độ ẩm đất":"70–90%","Độ pH đất":"5.5–6.5","Nước tưới":"Ngập nước thường xuyên"} },
-      tomato: { icon:"🍅", name:"Cà chua", sci:"Solanum lycopersicum", desc:"Cà chua ưa sáng, khí hậu ôn hòa, đất tơi xốp.", light:"6–8 giờ/ngày", lux:"30.000–50.000", data:{
-        "Nhiệt độ lý tưởng":"22–28°C","Độ ẩm đất":"60–70%","Độ pH đất":"6.0–6.8","Tưới nước":"Vừa phải, tránh úng"} },
-      lettuce: { icon:"🥬", name:"Xà lách", sci:"Lactuca sativa", desc:"Xà lách ưa mát, phát triển nhanh, tránh nắng gắt.", light:"Trung bình", lux:"15.000–25.000", data:{
-        "Nhiệt độ lý tưởng":"18–24°C","Độ ẩm đất":"60–80%","Độ pH đất":"6.0–7.0","Tưới nước":"Giữ ẩm liên tục"} },
-      chili: { icon:"🌶️", name:"Ớt", sci:"Capsicum annuum", desc:"Ớt cần nhiều sáng, nhiệt độ cao.", light:"Trực tiếp", lux:"25.000–40.000", data:{
-        "Nhiệt độ lý tưởng":"25–32°C","Độ ẩm đất":"50–70%","Độ pH đất":"6.0–6.8","Tưới nước":"Vừa phải, tránh ngập"} },
-      cucumber: { icon:"🥒", name:"Dưa leo", sci:"Cucumis sativus", desc:"Dưa leo ưa sáng, đất giàu dinh dưỡng, thoát nước tốt.", light:"6–8 giờ/ngày", lux:"20.000–30.000", data:{
-        "Nhiệt độ lý tưởng":"24–30°C","Độ ẩm đất":"65–80%","Độ pH đất":"6.0–7.0","Tưới nước":"Đều đặn, giữ ẩm"} },
-      airplant: { icon:"🌿", name:"Cây không khí", sci:"Tillandsia spp.", desc:"Không cần đất, hấp thu ẩm từ không khí.", light:"Gián tiếp", lux:"10.000–20.000", data:{
-        "Nhiệt độ lý tưởng":"18–30°C","Độ ẩm không khí":"50–80%","Độ pH đất":"Không áp dụng (không cần đất)","Tưới nước":"Phun sương 2–3 lần/tuần"} },
-      dendrobium: { icon:"🌸", name:"Phong lan Dendrobium", sci:"Dendrobium spp.", desc:"Ưa sáng nhẹ, thoáng gió, không chịu úng.", light:"Sáng nhẹ", lux:"15.000–25.000", data:{
-        "Nhiệt độ lý tưởng":"20–30°C","Độ ẩm không khí":"60–80%","Độ pH đất":"5.5–6.5","Tưới nước":"Mỗi ngày 1 lần (mùa nóng)"} },
-      phalaenopsis: { icon:"💮", name:"Phong lan Hồ Điệp", sci:"Phalaenopsis spp.", desc:"Ưa mát, tránh nắng trực tiếp.", light:"Khuếch tán", lux:"10.000–15.000", data:{
-        "Nhiệt độ lý tưởng":"18–28°C","Độ ẩm không khí":"60–80%","Độ pH đất":"5.8–6.5","Tưới nước":"2–3 lần/tuần"} },
-      cattleya: { icon:"🌺", name:"Phong lan Cattleya", sci:"Cattleya spp.", desc:"Ưa sáng mạnh, thoáng khí, không chịu ngập.", light:"Sáng nhiều", lux:"25.000–35.000", data:{
-        "Nhiệt độ lý tưởng":"22–32°C","Độ ẩm không khí":"60–70%","Độ pH đất":"5.5–6.5","Tưới nước":"2–3 lần/tuần"} },
-      asplenium: { icon:"🌿", name:"Dương xỉ tổ chim", sci:"Asplenium nidus", desc:"Ưa bóng, độ ẩm cao, thích hợp trong nhà.", light:"Tán xạ", lux:"5.000–15.000", data:{
-        "Nhiệt độ lý tưởng":"20–28°C","Độ ẩm đất":"60–80%","Độ pH đất":"6.0–7.0","Tưới nước":"Giữ ẩm đều"} }
+      rice: {
+        icon: "🌾",
+        name: "Lúa",
+        sci: "Oryza sativa",
+        desc: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng.",
+        lightDesc: "Cao (trực tiếp)",
+        lightLux: "40.000–80.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "25–35°C",
+          "Độ ẩm đất": "70–90%",
+          "Độ pH đất": "5.5–6.5",
+          "Nước tưới": "Ngập nước liên tục"
+        }
+      },
+      tomato: {
+        icon: "🍅",
+        name: "Cà chua",
+        sci: "Solanum lycopersicum",
+        desc: "Cà chua thích hợp khí hậu ôn hòa, đất tơi xốp.",
+        lightDesc: "6–8 giờ/ngày",
+        lightLux: "30.000–50.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "22–28°C",
+          "Độ ẩm đất": "60–70%",
+          "Độ pH đất": "6.0–6.8",
+          "Tưới nước": "Vừa phải, tránh úng"
+        }
+      },
+      lettuce: {
+        icon: "🥬",
+        name: "Xà lách",
+        sci: "Lactuca sativa",
+        desc: "Xà lách ưa mát, ánh sáng vừa phải.",
+        lightDesc: "Trung bình, tránh nắng gắt",
+        lightLux: "15.000–25.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "18–24°C",
+          "Độ ẩm đất": "60–80%",
+          "Độ pH đất": "6.0–7.0",
+          "Tưới nước": "Giữ ẩm liên tục"
+        }
+      },
+      chili: {
+        icon: "🌶️",
+        name: "Ớt",
+        sci: "Capsicum annuum",
+        desc: "Ớt cần nhiều ánh sáng, nhiệt độ cao.",
+        lightDesc: "Nhiều (trực tiếp)",
+        lightLux: "25.000–40.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "25–32°C",
+          "Độ ẩm đất": "50–70%",
+          "Độ pH đất": "6.0–6.8",
+          "Tưới nước": "Vừa phải, tránh ngập"
+        }
+      },
+      cucumber: {
+        icon: "🥒",
+        name: "Dưa leo",
+        sci: "Cucumis sativus",
+        desc: "Dưa leo cần ánh sáng mạnh, đất thoát nước tốt.",
+        lightDesc: "6–8 giờ/ngày",
+        lightLux: "20.000–30.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "24–30°C",
+          "Độ ẩm đất": "65–80%",
+          "Độ pH đất": "6.0–7.0",
+          "Tưới nước": "Đều đặn, giữ ẩm vừa phải"
+        }
+      },
+      rose: {
+        icon: "🌹",
+        name: "Hoa hồng",
+        sci: "Rosa hybrida",
+        desc: "Hoa hồng ưa nắng, đất thoát nước tốt.",
+        lightDesc: "Nhiều (trực tiếp)",
+        lightLux: "25.000–35.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "25–32°C",
+          "Độ ẩm đất": "50–70%",
+          "Độ pH đất": "6.0–6.8",
+          "Tưới nước": "2–3 lần/tuần"
+        }
+      },
+      airplant: {
+        icon: "🌿",
+        name: "Cây không khí",
+        sci: "Tillandsia spp.",
+        desc: "Cây sống nhờ hấp thụ ẩm và dinh dưỡng từ không khí.",
+        lightDesc: "Ánh sáng tán xạ",
+        lightLux: "10.000–20.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "20–30°C",
+          "Độ ẩm môi trường": "60–80%",
+          "Độ pH đất": "Không áp dụng (không cần đất)",
+          "Tưới nước": "Phun sương 2–3 lần/tuần"
+        }
+      },
+      dendrobium: {
+        icon: "💮",
+        name: "Phong lan Dendrobium",
+        sci: "Dendrobium spp.",
+        desc: "Ưa sáng nhẹ, độ ẩm cao và thông thoáng.",
+        lightDesc: "Sáng tán xạ",
+        lightLux: "15.000–25.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "18–30°C",
+          "Độ ẩm đất": "60–80%",
+          "Độ pH đất": "5.5–6.5",
+          "Tưới nước": "Thường xuyên, không úng"
+        }
+      },
+      phalaenopsis: {
+        icon: "🌸",
+        name: "Phong lan Hồ Điệp",
+        sci: "Phalaenopsis spp.",
+        desc: "Ưa sáng nhẹ, nhiệt độ ổn định quanh năm.",
+        lightDesc: "Sáng tán xạ",
+        lightLux: "10.000–20.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "22–28°C",
+          "Độ ẩm đất": "60–70%",
+          "Độ pH đất": "5.5–6.5",
+          "Tưới nước": "Giữ ẩm đều, tránh đọng nước"
+        }
+      },
+      asplenium: {
+        icon: "🌿",
+        name: "Dương xỉ tổ chim",
+        sci: "Asplenium nidus",
+        desc: "Ưa bóng râm, độ ẩm cao, không chịu nắng gắt.",
+        lightDesc: "Bóng râm hoặc sáng nhẹ",
+        lightLux: "5.000–10.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "18–28°C",
+          "Độ ẩm đất": "70–90%",
+          "Độ pH đất": "6.0–7.0",
+          "Tưới nước": "Giữ ẩm thường xuyên"
+        }
+      },
+      cattleya: {
+        icon: "🌼",
+        name: "Phong lan Cattleya",
+        sci: "Cattleya spp.",
+        desc: "Cần nhiều ánh sáng và thông thoáng.",
+        lightDesc: "Ánh sáng mạnh, tán xạ nhẹ",
+        lightLux: "20.000–30.000 lux",
+        data: {
+          "Nhiệt độ lý tưởng": "20–30°C",
+          "Độ ẩm đất": "60–80%",
+          "Độ pH đất": "5.5–6.5",
+          "Tưới nước": "Vừa phải, để khô nhẹ giữa 2 lần tưới"
+        }
+      }
     };
 
-    function showPlant(key) {
-      const p = plantInfo[key];
-      if (!p) return;
-      document.getElementById("plantTitle").innerHTML = `${p.icon} ${p.name} <br><i>${p.sci}</i>`;
-      const tbody = document.querySelector("#infoTable tbody");
-      tbody.innerHTML = "";
-      const lightRow = `<tr><td>Ánh sáng</td><td>${p.light} – <span class="lux">${p.lux} lux</span></td></tr>`;
-      tbody.insertAdjacentHTML("beforeend", lightRow);
-      for (const [k, v] of Object.entries(p.data)) {
-        tbody.insertAdjacentHTML("beforeend", `<tr><td>${k}</td><td>${v}</td></tr>`);
-      }
-      document.getElementById("desc").innerText = p.desc;
-      document.getElementById("suggestions").innerHTML = "";
+    function initSelect() {
+      const select = document.getElementById("plantSelect");
+      select.innerHTML = "";
+      Object.entries(plantInfo).forEach(([key, obj]) => {
+        const opt = document.createElement("option");
+        opt.value = key;
+        opt.textContent = `${obj.icon} ${obj.name}`;
+        select.appendChild(opt);
+      });
+      // Hiển thị ngẫu nhiên 1 cây khi mở trang
+      const keys = Object.keys(plantInfo);
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      select.value = randomKey;
+      showInfo();
     }
 
-    function showSuggestions() {
-      const val = document.getElementById("plantSearch").value.toLowerCase();
-      const sug = document.getElementById("suggestions");
-      sug.innerHTML = "";
-      if (!val) return;
-      Object.entries(plantInfo).forEach(([k, v]) => {
-        if (v.name.toLowerCase().includes(val)) {
-          const li = document.createElement("li");
-          li.textContent = `${v.icon} ${v.name}`;
-          li.onclick = () => {
-            showPlant(k);
-            document.getElementById("plantSearch").value = v.name;
-          };
-          sug.appendChild(li);
+    function filterPlants() {
+      const keyword = document.getElementById("plantSearch").value.toLowerCase().trim();
+      const select = document.getElementById("plantSelect");
+      select.innerHTML = "";
+
+      Object.entries(plantInfo).forEach(([key, obj]) => {
+        if (obj.name.toLowerCase().includes(keyword)) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = `${obj.icon} ${obj.name}`;
+          select.appendChild(opt);
         }
       });
+
+      if (select.options.length > 0) {
+        select.value = select.options[0].value;
+        showInfo();
+      } else {
+        document.querySelector("#infoTable tbody").innerHTML =
+          `<tr><td class="no-data" colspan="2">Không tìm thấy cây phù hợp.</td></tr>`;
+        document.getElementById("desc").innerText = "";
+        document.getElementById("plantTitle").innerHTML = "";
+        document.getElementById("sciName").innerHTML = "";
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const keys = Object.keys(plantInfo);
-      showPlant(keys[Math.floor(Math.random() * keys.length)]);
-    });
+    function showInfo() {
+      const select = document.getElementById("plantSelect");
+      const info = plantInfo[select.value];
+      const tbody = document.querySelector("#infoTable tbody");
+      tbody.innerHTML = "";
+      if (!info) return;
+
+      document.getElementById("plantTitle").innerHTML = `${info.icon} ${info.name}`;
+      document.getElementById("sciName").innerHTML = info.sci ? `<i>${info.sci}</i>` : "";
+
+      const lightRow = document.createElement("tr");
+      lightRow.innerHTML = `<td>Ánh sáng</td><td>${info.lightDesc} – <span class="lux">${info.lightLux}</span></td>`;
+      tbody.appendChild(lightRow);
+
+      for (const [key, value] of Object.entries(info.data)) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${key}</td><td>${value}</td>`;
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById("desc").innerText = info.desc;
+    }
+
+    document.addEventListener("DOMContentLoaded", initSelect);
   </script>
 </body>
 </html>
