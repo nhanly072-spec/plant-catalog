@@ -1,293 +1,212 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>🌿 Bảng tra cứu chỉ số cây trồng</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌱 CATALOG CHỈ SỐ CÂY TRỒNG</title>
 <style>
-  :root{
-    --bg:#eefcf0;
-    --card:#fff;
-    --accent:#14642a;
-    --muted:#616161;
-    --hover:#dff7df;
-    --shadow: 0 6px 18px rgba(0,0,0,0.06);
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f0fff0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    overflow: hidden;
   }
-  html,body{height:100%;margin:0;font-family:"Segoe UI","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif;background:var(--bg);color:#0b3b2e;}
-  .wrap{max-width:980px;margin:28px auto;padding:14px;}
-  h1{text-align:center;color:var(--accent);margin:8px 0 16px;}
-  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
-  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-  label{font-weight:600;color:var(--accent);}
-  input.search{padding:9px 10px;border-radius:10px;border:1px solid #dbeeda;min-width:260px;transition:box-shadow .18s, border-color .18s;}
-  input.search:focus{outline:none;border-color:#78d28e;box-shadow:0 0 0 6px rgba(120,210,142,0.12);}
-  /* custom dropdown */
-  .custom-select{position:relative;min-width:250px;}
-  .select-btn{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:9px 10px;border-radius:10px;border:1px solid #dbeeda;background:#fff;cursor:pointer;}
-  .select-btn .left{display:flex;align-items:center;gap:10px;}
-  .select-btn .emoji{font-size:20px}
-  .list{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6f3e9;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.08);max-height:260px;overflow:auto;z-index:50;display:none;}
-  .list.open{display:block;}
-  .item{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .item:hover{background:var(--hover);}
-  .item .emoji{width:28px;text-align:center;font-size:18px;}
-  .item small{margin-left:auto;color:var(--muted);font-style:italic;}
-  /* suggestions under search */
-  .suggestions{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e1f3df;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,0.06);max-height:220px;overflow:auto;z-index:60;display:none;}
-  .suggestions .sitem{padding:8px 10px;cursor:pointer;}
-  .suggestions .sitem:hover{background:var(--hover);}
-  /* plant display */
-  .plant-block{text-align:center;margin-top:18px;}
-  .plant-block .big-emoji{font-size:46px}
-  .plant-block h2{margin:8px 0 4px;color:var(--accent);}
-  .scientific{font-style:italic;color:#2e7d32;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;margin-top:10px;}
-  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #eef7ee;transition:background .18s;}
-  th{background:#bfe7c9;color:#0b4a2b;}
-  tbody tr:hover td{background:var(--hover);} /* highlight xanh nhạt */
-  .note{margin-top:10px;font-style:italic;color:var(--muted);}
-  @media (max-width:720px){
-    .controls{flex-direction:column;align-items:stretch;}
-    .custom-select,input.search{width:100%;}
-    .select-btn{justify-content:flex-start;}
+
+  /* --- Sidebar cây --- */
+  #sidebar {
+    width: 260px;
+    background: #eaffea;
+    padding: 15px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+  }
+
+  #sidebar.hidden {
+    transform: translateX(-100%);
+  }
+
+  #search {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+
+  .plant-item {
+    padding: 10px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    transition: background 0.25s;
+  }
+
+  .plant-item:hover {
+    background: #c8f7c5;
+  }
+
+  /* --- Thông tin cây --- */
+  #content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .info-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s;
+  }
+
+  .info-card:hover {
+    box-shadow: 0 4px 18px rgba(0,0,0,0.15);
+  }
+
+  h2 {
+    color: #2e7d32;
+    margin-bottom: 5px;
+    font-size: 1.4rem;
+  }
+
+  .scientific {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
+
+  .info-row {
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    transition: background 0.25s;
+    font-size: 0.95rem;
+  }
+
+  .info-row:hover {
+    background: #e1ffe1;
+  }
+
+  /* --- Mobile responsive --- */
+  @media (max-width: 768px) {
+    body {
+      flex-direction: column;
+    }
+
+    #sidebar {
+      position: fixed;
+      height: 100%;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      transform: translateX(-100%);
+    }
+
+    #sidebar.show {
+      transform: translateX(0);
+    }
+
+    #content {
+      padding: 15px;
+    }
+
+    #menu-toggle {
+      display: block;
+      padding: 10px 15px;
+      background: #2e7d32;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
   }
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
-    <div class="card">
-      <div class="controls" aria-label="controls">
-        <label>🔍 Tìm cây:</label>
-        <div style="position:relative; flex:1; min-width:220px;">
-          <input id="search" class="search" placeholder="Gõ tên cây (ví dụ: ớt, lan, cây không khí)"/>
-          <div id="suggestions" class="suggestions" aria-hidden="true"></div>
-        </div>
 
-        <label>Hoặc chọn cây:</label>
-        <div class="custom-select" id="customSelect">
-          <div id="selectBtn" class="select-btn" role="button" tabindex="0" aria-expanded="false" aria-haspopup="listbox">
-            <div class="left"><span id="selEmoji" class="emoji">🌿</span><span id="selText">Chọn cây</span></div>
-            <div class="chev">▾</div>
-          </div>
-          <div id="list" class="list" role="listbox"></div>
-        </div>
-      </div>
+<!-- Nút mở/đóng menu cho mobile -->
+<button id="menu-toggle" onclick="toggleSidebar()">☰ Danh sách cây</button>
 
-      <div id="plant" class="plant-block" aria-live="polite">
-        <div class="big-emoji" id="pEmoji">🌿</div>
-        <h2 id="pName">Cây trồng</h2>
-        <div class="scientific" id="pSci"></div>
-      </div>
+<div id="sidebar">
+  <input type="text" id="search" placeholder="🔍 Tìm cây trồng..." onkeyup="filterPlants()">
+  <div id="plant-list"></div>
+</div>
 
-      <table aria-describedby="note">
-        <thead><tr><th>Thông số</th><th>Giá trị phù hợp</th></tr></thead>
-        <tbody id="infoBody"></tbody>
-      </table>
-
-      <div id="note" class="note"></div>
-    </div>
+<div id="content">
+  <div id="plant-info" class="info-card">
+    <h2>🌱 CATALOG CÂY TRỒNG</h2>
+    <p>Chọn một loại cây ở danh sách bên trái để xem thông số chi tiết.</p>
   </div>
+</div>
 
 <script>
-/* FULL DATA: old plants + requested 5 new ones */
-const plantList = [
-  { id:"rice", emoji:"🌾", name:"Lúa", scientific:"Oryza sativa", note:"Lúa ưa ẩm, cần nhiều nước.", info:{
-    "Ánh sáng":"Trực tiếp – 40.000–80.000 lux", "Nhiệt độ":"25–35°C", "Độ ẩm đất":"70–90%", "pH":"5.5–6.5", "Tưới":"Giữ ngập giai đoạn sinh trưởng"
-  }},
-  { id:"tomato", emoji:"🍅", name:"Cà chua", scientific:"Solanum lycopersicum", note:"Cần đất tơi xốp, nhiều dinh dưỡng.", info:{
-    "Ánh sáng":"6–8 giờ/ngày – 30.000–50.000 lux", "Nhiệt độ":"22–28°C", "Độ ẩm đất":"60–70%", "pH":"6.0–6.8", "Tưới":"Vừa phải, tránh úng"
-  }},
-  { id:"lettuce", emoji:"🥬", name:"Xà lách", scientific:"Lactuca sativa", note:"Ưa mát, phát triển nhanh.", info:{
-    "Ánh sáng":"Trung bình – 15.000–25.000 lux", "Nhiệt độ":"18–24°C", "Độ ẩm đất":"60–80%", "pH":"6.0–7.0", "Tưới":"Giữ ẩm liên tục"
-  }},
-  { id:"chili", emoji:"🌶️", name:"Ớt", scientific:"Capsicum annuum", note:"Cần nhiều ánh sáng và nhiệt độ ấm.", info:{
-    "Ánh sáng":"Nhiều – 25.000–40.000 lux", "Nhiệt độ":"25–32°C", "Độ ẩm đất":"50–70%", "pH":"6.0–6.8", "Tưới":"Vừa phải"
-  }},
-  { id:"cucumber", emoji:"🥒", name:"Dưa leo", scientific:"Cucumis sativus", note:"Cần đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt.", info:{
-    "Ánh sáng":"6–8 giờ/ngày – 20.000–30.000 lux", "Nhiệt độ":"24–30°C", "Độ ẩm đất":"65–80%", "pH":"6.0–7.0", "Tưới":"Đều đặn"
-  }},
-  { id:"rose", emoji:"🌹", name:"Hoa Hồng", scientific:"Rosa spp.", note:"Ưa nắng, đất tơi xốp.", info:{
-    "Ánh sáng":"Nhiều (trực tiếp)", "Nhiệt độ":"25–32°C", "Độ ẩm đất":"50–70%", "pH":"6.0–6.8", "Tưới":"2–3 lần/tuần"
-  }},
-  // NEW: Cây không khí
-  { id:"airplant", emoji:"🌿", name:"Cây không khí", scientific:"Tillandsia spp.", note:"Không cần đất, hấp thu hơi ẩm.", info:{
-    "Ánh sáng":"Gián tiếp – 10.000–20.000 lux", "Nhiệt độ":"18–30°C", "Độ ẩm khí":"50–80%", "Tưới":"Phun sương 2–3 lần/tuần"
-  }},
-  // Dendrobium
-  { id:"dendrobium", emoji:"🌸", name:"Phong lan Dendrobium", scientific:"Dendrobium spp.", note:"Thích nơi thoáng, sáng tán xạ.", info:{
-    "Ánh sáng":"Sáng nhẹ – 15.000–25.000 lux", "Nhiệt độ":"20–30°C", "Độ ẩm":"60–80%", "Tưới":"Khi giá thể khô"
-  }},
-  // Phalaenopsis
-  { id:"phalaenopsis", emoji:"💮", name:"Phong lan Hồ Điệp", scientific:"Phalaenopsis spp.", note:"Ưa mát, tránh nắng trực tiếp.", info:{
-    "Ánh sáng":"Khuếch tán – 10.000–15.000 lux", "Nhiệt độ":"18–28°C", "Độ ẩm":"60–80%", "Tưới":"2–3 lần/tuần"
-  }},
-  // Bird's nest fern
-  { id:"birdnestfern", emoji:"🌱", name:"Dương xỉ tổ chim", scientific:"Asplenium nidus", note:"Ưa bóng và độ ẩm cao.", info:{
-    "Ánh sáng":"Tán xạ – 5.000–15.000 lux", "Nhiệt độ":"20–28°C", "Độ ẩm đất":"60–80%", "Tưới":"Giữ ẩm đều, tránh ngập"
-  }},
-  // Cattleya
-  { id:"cattleya", emoji:"🌼", name:"Phong lan Cattleya", scientific:"Cattleya spp.", note:"Cần sáng nhiều và thoáng.", info:{
-    "Ánh sáng":"Mạnh nhưng tán xạ – 20.000–30.000 lux", "Nhiệt độ":"22–32°C", "Độ ẩm":"60–80%", "Tưới":"3–4 lần/tuần"
-  }}
-];
+  const plants = [
+    { name: "🌿 Cây không khí", sci: "Tillandsia spp.", temp: "20–30°C", humidity: "60–80%", light: "Ánh sáng tán xạ", soil: "Không cần đất", ph: "Không áp dụng" },
+    { name: "🌸 Cây phong lan Dendrobium", sci: "Dendrobium spp.", temp: "18–28°C", humidity: "70–85%", light: "Sáng nhẹ", soil: "Thoáng, nhiều xơ dừa", ph: "5.5–6.5" },
+    { name: "🌺 Cây phong lan Hồ Điệp", sci: "Phalaenopsis spp.", temp: "20–28°C", humidity: "60–80%", light: "Ánh sáng yếu", soil: "Vỏ thông + rêu", ph: "5.5–6.5" },
+    { name: "🌼 Cây phong lan Cattleya", sci: "Cattleya spp.", temp: "18–30°C", humidity: "60–70%", light: "Ánh sáng mạnh hơn lan Hồ Điệp", soil: "Than vụn + vỏ thông", ph: "5.5–6.5" },
+    { name: "🌳 Cây dương xỉ tổ chim", sci: "Asplenium nidus", temp: "22–30°C", humidity: "70–90%", light: "Bóng râm, sáng tán xạ", soil: "Mùn + xơ dừa", ph: "6.0–7.0" },
+    { name: "🍅 Cà chua", sci: "Solanum lycopersicum", temp: "18–27°C", humidity: "60–70%", light: "Nắng mạnh", soil: "Tơi xốp, giàu hữu cơ", ph: "6.0–6.8" },
+    { name: "🥬 Rau cải xanh", sci: "Brassica juncea", temp: "18–25°C", humidity: "70–85%", light: "Nắng nhẹ", soil: "Đất thịt nhẹ, tơi xốp", ph: "6.0–7.0" },
+    { name: "🌾 Lúa", sci: "Oryza sativa", temp: "20–37°C", humidity: "80–90%", light: "Nắng trực tiếp", soil: "Đất ngập nước", ph: "5.5–7.0" },
+    { name: "🍓 Dâu tây", sci: "Fragaria × ananassa", temp: "15–25°C", humidity: "60–80%", light: "Ánh sáng nhẹ", soil: "Tơi xốp, thoát nước tốt", ph: "5.5–6.5" }
+  ];
 
-/* UI elements */
-const selectBtn = document.getElementById('selectBtn');
-const listEl = document.getElementById('list');
-const selEmoji = document.getElementById('selEmoji');
-const selText = document.getElementById('selText');
-const searchEl = document.getElementById('search');
-const suggestions = document.getElementById('suggestions');
-const pEmoji = document.getElementById('pEmoji');
-const pName = document.getElementById('pName');
-const pSci = document.getElementById('pSci');
-const infoBody = document.getElementById('infoBody');
-const noteEl = document.getElementById('note');
+  const listContainer = document.getElementById("plant-list");
+  const info = document.getElementById("plant-info");
+  const sidebar = document.getElementById("sidebar");
 
-/* Build custom dropdown list (with emoji + scientific on right) */
-function buildList(filter=''){
-  listEl.innerHTML='';
-  const q=filter.trim().toLowerCase();
-  plantList.forEach((p, idx) => {
-    const label = `${p.emoji} ${p.name}`;
-    if(q){
-      const hay = (p.name + ' ' + p.scientific + ' ' + p.id).toLowerCase();
-      if(!hay.includes(q)) return;
-    }
-    const item = document.createElement('div');
-    item.className = 'item';
-    item.dataset.idx = idx;
-    item.innerHTML = `<span class="emoji">${p.emoji}</span><span class="txt">${p.name}</span><small>${p.scientific}</small>`;
-    item.addEventListener('click', ()=> {
-      listEl.classList.remove('open');
-      selectBtn.setAttribute('aria-expanded','false');
-      chooseIndex(idx);
+  function showPlant(p) {
+    info.innerHTML = `
+      <h2>${p.name}</h2>
+      <div class="scientific">${p.sci}</div>
+      <div class="info-row"><b>Nhiệt độ thích hợp:</b> ${p.temp}</div>
+      <div class="info-row"><b>Độ ẩm:</b> ${p.humidity}</div>
+      <div class="info-row"><b>Ánh sáng:</b> ${p.light}</div>
+      <div class="info-row"><b>Loại đất:</b> ${p.soil}</div>
+      <div class="info-row"><b>Độ pH đất:</b> ${p.ph}</div>
+    `;
+    if(window.innerWidth <= 768) sidebar.classList.remove("show"); // tự động đóng menu mobile
+  }
+
+  function renderList(list) {
+    listContainer.innerHTML = "";
+    list.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "plant-item";
+      div.textContent = p.name;
+      div.onclick = () => showPlant(p);
+      listContainer.appendChild(div);
     });
-    listEl.appendChild(item);
-  });
-}
-
-/* Build suggestions for search box */
-function buildSuggestions(q){
-  suggestions.innerHTML='';
-  if(!q){ suggestions.style.display='none'; return; }
-  const matches = plantList.filter(p => {
-    const hay = (p.name + ' ' + p.scientific + ' ' + p.id).toLowerCase();
-    return hay.includes(q.toLowerCase());
-  });
-  if(matches.length === 0){ suggestions.style.display='none'; return; }
-  matches.forEach((p, idx) => {
-    const div = document.createElement('div');
-    div.className = 'sitem';
-    div.textContent = `${p.emoji} ${p.name}`;
-    div.addEventListener('click', ()=> {
-      searchEl.value = p.name;
-      suggestions.style.display='none';
-      chooseById(p.id);
-    });
-    suggestions.appendChild(div);
-  });
-  suggestions.style.display = 'block';
-  // if only 1 match, auto choose it
-  if(matches.length === 1){
-    chooseById(matches[0].id);
   }
-}
 
-/* Choose and render plant by index */
-function chooseIndex(idx){
-  const p = plantList[idx];
-  if(!p) return;
-  selEmoji.textContent = p.emoji; selText.textContent = p.name;
-  renderPlant(p);
-  selectBtn.dataset.current = idx;
-}
-
-/* Choose by ID (string id) */
-function chooseById(id){
-  const idx = plantList.findIndex(x => x.id === id || x.name === id);
-  if(idx >= 0) chooseIndex(idx);
-}
-
-/* Render plant info */
-function renderPlant(p){
-  pEmoji.textContent = p.emoji;
-  pName.textContent = p.name;
-  pSci.textContent = p.scientific ? `(${p.scientific})` : '';
-  infoBody.innerHTML = '';
-  for(const [k,v] of Object.entries(p.info)){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${k}</td><td>${v}</td>`;
-    infoBody.appendChild(tr);
+  function filterPlants() {
+    const keyword = document.getElementById("search").value.toLowerCase();
+    const filtered = plants.filter(p => p.name.toLowerCase().includes(keyword));
+    renderList(filtered);
+    if (filtered.length === 1) showPlant(filtered[0]);
   }
-  noteEl.textContent = p.note || '';
-}
 
-/* Toggle dropdown open/close */
-selectBtn.addEventListener('click', ()=>{
-  const open = listEl.classList.toggle('open');
-  selectBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  if(open){
-    // scroll selected into view
-    const cur = selectBtn.dataset.current;
-    if(cur != null){
-      const el = listEl.querySelector(`[data-idx="${cur}"]`);
-      if(el) el.scrollIntoView({block:'nearest'});
-    }
+  function toggleSidebar() {
+    sidebar.classList.toggle("show");
   }
-});
 
-/* Close if click outside */
-document.addEventListener('click', (e)=>{
-  if(!document.getElementById('customSelect').contains(e.target) && e.target !== searchEl){
-    listEl.classList.remove('open');
-    suggestions.style.display='none';
-    selectBtn.setAttribute('aria-expanded','false');
-  }
-});
-
-/* Search input live */
-searchEl.addEventListener('input', (e)=>{
-  const q = e.target.value.trim();
-  buildSuggestions(q);
-  // Also filter dropdown list visually
-  buildList(q);
-});
-
-/* Keyboard: Enter on search = choose exact match if exists */
-searchEl.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){
-    const q = searchEl.value.trim().toLowerCase();
-    if(!q) return;
-    // try exact name match (ignoring emoji prefix)
-    const found = plantList.find(p => p.name.toLowerCase() === q || p.name.replace(/[^a-zA-Z0-9\s]/g,'').toLowerCase() === q);
-    if(found) {
-      chooseById(found.id);
-      suggestions.style.display='none';
-      listEl.classList.remove('open');
-    } else {
-      // if single suggestion exists, pick it
-      const matches = plantList.filter(p => (p.name + ' ' + p.scientific + ' ' + p.id).toLowerCase().includes(q));
-      if(matches.length === 1) chooseById(matches[0].id);
-    }
-  }
-});
-
-/* Build initial list and choose a random plant on load */
-document.addEventListener('DOMContentLoaded', ()=>{
-  buildList('');
-  // random initial
-  const idx = Math.floor(Math.random() * plantList.length);
-  chooseIndex(idx);
-  // ensure suggestions hidden initially
-  suggestions.style.display='none';
-});
-
-/* Also allow choosing with keyboard on selectBtn */
-selectBtn.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectBtn.click(); }
-});
+  window.onload = () => {
+    renderList(plants);
+    showPlant(plants[0]);
+  };
 </script>
+
 </body>
 </html>
