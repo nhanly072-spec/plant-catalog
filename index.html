@@ -11,7 +11,6 @@
       padding: 40px 20px;
     }
 
-    /* ✅ Hiển thị emoji rõ nét và đồng nhất */
     body, select, option, input, button, h1, td, th, p {
       font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', 'Segoe UI', sans-serif;
     }
@@ -85,6 +84,13 @@
       color: #0d3b2e;
       margin-top: 15px;
     }
+    .scientific-name {
+      text-align: center;
+      font-style: italic;
+      color: #2e7d32;
+      margin-top: 4px;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
@@ -99,6 +105,7 @@
     </div>
 
     <div id="plantTitle" class="plant-title"></div>
+    <div id="scientificName" class="scientific-name"></div>
 
     <table id="infoTable" aria-live="polite">
       <thead>
@@ -298,6 +305,7 @@
           `<tr><td class="no-data" colspan="2">Không tìm thấy cây phù hợp.</td></tr>`;
         document.getElementById("desc").innerText = "";
         document.getElementById("plantTitle").innerHTML = "";
+        document.getElementById("scientificName").innerHTML = "";
       }
     }
 
@@ -309,12 +317,11 @@
       tbody.innerHTML = "";
       if (!info) return;
 
+      // 🌿 Hiển thị tên và tên khoa học
       document.getElementById("plantTitle").innerHTML = `${info.icon} ${info.name}`;
-
-      // 🧬 Tên khoa học
-      const sciRow = document.createElement("tr");
-      sciRow.innerHTML = `<td>Tên khoa học</td><td><i>${info.scientificName}</i></td>`;
-      tbody.appendChild(sciRow);
+      document.getElementById("scientificName").innerHTML = info.scientificName
+        ? `<i>${info.scientificName}</i>`
+        : "";
 
       // ☀️ Ánh sáng
       const lightRow = document.createElement("tr");
