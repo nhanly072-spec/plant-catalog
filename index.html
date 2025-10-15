@@ -10,47 +10,59 @@
     --panel:#fff;
     --accent:#1b8a44;
     --muted:#6b6b6b;
-    --card-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    --card-shadow:0 6px 18px rgba(0,0,0,0.06);
+    --hover-row:#d9fbe1;
   }
-  html,body{height:100%; margin:0; font-family: "Segoe UI", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif; background:var(--bg); color:#0b3b2e;}
-  .wrap{max-width:960px; margin:28px auto; padding:12px;}
-  h1{text-align:center; color:var(--accent); margin:8px 0 18px;}
-  .card{background:var(--panel); border-radius:14px; padding:20px; box-shadow:var(--card-shadow);}
-  .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:flex-start;}
-  label{font-weight:600; color:var(--accent);}
-  input.search{padding:8px 10px; border-radius:9px; border:1px solid #d9eedf; min-width:260px;}
+  html,body{height:100%;margin:0;font-family:"Segoe UI","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif;background:var(--bg);color:#0b3b2e;}
+  .wrap{max-width:960px;margin:28px auto;padding:12px;}
+  h1{text-align:center;color:var(--accent);margin:8px 0 18px;}
+  .card{background:var(--panel);border-radius:14px;padding:20px;box-shadow:var(--card-shadow);}
+  .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:flex-start;}
+  label{font-weight:600;color:var(--accent);}
+  input.search{
+    padding:8px 10px;
+    border-radius:9px;
+    border:1px solid #d9eedf;
+    min-width:260px;
+    transition:border-color 0.25s, box-shadow 0.25s;
+  }
+  input.search:focus{
+    outline:none;
+    border-color:#56cc7e;
+    box-shadow:0 0 0 3px rgba(86,204,126,0.25);
+  }
+
   /* custom dropdown */
-  .custom-select{position:relative; min-width:240px;}
+  .custom-select{position:relative;min-width:240px;}
   .select-btn{
-    display:flex; align-items:center; gap:8px;
-    justify-content:space-between;
-    border:1px solid #d9eedf; padding:8px 10px;
-    border-radius:9px; background:#fff; cursor:pointer;
-    min-width:220px;
+    display:flex;align-items:center;gap:8px;justify-content:space-between;
+    border:1px solid #d9eedf;padding:8px 10px;border-radius:9px;background:#fff;cursor:pointer;min-width:220px;
   }
-  .select-btn .left{display:flex; gap:10px; align-items:center;}
+  .select-btn .left{display:flex;gap:10px;align-items:center;}
   .select-btn .emoji{font-size:20px}
   .select-list{
-    position:absolute; z-index:40;
-    left:0; right:0; top:calc(100% + 8px);
-    background:#fff; border:1px solid #e3efe6; border-radius:9px; max-height:220px; overflow:auto;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08); display:none;
+    position:absolute;z-index:40;left:0;right:0;top:calc(100% + 8px);
+    background:#fff;border:1px solid #e3efe6;border-radius:9px;max-height:220px;overflow:auto;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);display:none;
   }
   .select-list.open{display:block;}
-  .item{padding:8px 10px; display:flex; gap:8px; align-items:center; cursor:pointer;}
+  .item{padding:8px 10px;display:flex;gap:8px;align-items:center;cursor:pointer;transition:background 0.2s;}
   .item:hover{background:#f3fff5;}
-  .item .emoji{font-size:18px; width:28px; text-align:center;}
-  .plant-title{ text-align:center; margin-top:16px;}
+  .item .emoji{font-size:18px;width:28px;text-align:center;}
+
+  /* plant info */
+  .plant-title{text-align:center;margin-top:16px;}
   .plant-title .big-emoji{font-size:46px}
-  .plant-title h2{margin:6px 0 4px; color:var(--accent); font-size:1.35rem;}
-  .scientific{font-style:italic; color:#2e7d32; margin-bottom:6px;}
-  table{width:100%; border-collapse:collapse; margin-top:12px;}
-  th,td{padding:12px 14px; text-align:left; border-bottom:1px solid #e9f7ee;}
-  th{background:#bdeec4; color:#0b4a2b;}
-  .note{margin-top:10px; color:var(--muted); font-style:italic;}
-  /* small screens */
+  .plant-title h2{margin:6px 0 4px;color:var(--accent);font-size:1.35rem;}
+  .scientific{font-style:italic;color:#2e7d32;margin-bottom:6px;}
+  table{width:100%;border-collapse:collapse;margin-top:12px;}
+  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #e9f7ee;transition:background 0.25s;}
+  th{background:#bdeec4;color:#0b4a2b;}
+  tbody tr:hover{background:var(--hover-row);} /* 🌿 hiệu ứng sáng xanh */
+  .note{margin-top:10px;color:var(--muted);font-style:italic;}
+
   @media (max-width:700px){
-    .controls{flex-direction:column; align-items:stretch;}
+    .controls{flex-direction:column;align-items:stretch;}
     input.search{width:100%;}
     .custom-select{width:100%;}
   }
@@ -60,27 +72,26 @@
   <div class="wrap">
     <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
     <div class="card">
-      <div class="controls" aria-label="controls">
+      <div class="controls">
         <label>🔍 Tìm cây:</label>
-        <input class="search" id="searchInput" placeholder="Nhập tên cây (ví dụ: hoa, ớt, dưa...)">
+        <input class="search" id="searchInput" placeholder="Nhập tên cây (hoa, ớt, lan...)">
         <label>Hoặc chọn cây:</label>
-
-        <div class="custom-select" id="customSelect" aria-haspopup="listbox">
-          <div class="select-btn" id="selectBtn" role="button" tabindex="0" aria-expanded="false" aria-controls="selectList">
+        <div class="custom-select" id="customSelect">
+          <div class="select-btn" id="selectBtn" role="button" tabindex="0" aria-expanded="false">
             <div class="left"><span class="emoji" id="selEmoji">🌿</span><span id="selText">Chọn cây</span></div>
             <div class="chev">▾</div>
           </div>
-          <div class="select-list" id="selectList" role="listbox" tabindex="-1"></div>
+          <div class="select-list" id="selectList" role="listbox"></div>
         </div>
       </div>
 
-      <div class="plant-title" id="plantBlock" aria-live="polite">
+      <div class="plant-title" id="plantBlock">
         <div class="big-emoji" id="plantEmoji">🌿</div>
         <h2 id="plantName">Tên cây</h2>
         <div class="scientific" id="plantScientific"></div>
       </div>
 
-      <table aria-describedby="note">
+      <table>
         <thead><tr><th>Thông số</th><th>Giá trị phù hợp</th></tr></thead>
         <tbody id="infoBody"></tbody>
       </table>
@@ -90,263 +101,101 @@
   </div>
 
 <script>
-/* DATA: đầy đủ các cây bạn yêu cầu */
 const plantList = [
-  {
-    id: "rice",
-    emoji: "🌾",
-    name: "Lúa",
-    scientific: "Oryza sativa",
-    info: {
-      "Ánh sáng":"Cao (trực tiếp) – 40.000–80.000 lux",
-      "Nhiệt độ lý tưởng":"25–35°C",
-      "Độ ẩm đất":"70–90%",
-      "Độ pH đất":"5.5–6.5",
-      "Tưới nước":"Ngập/giữ ẩm liên tục"
-    },
-    note: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng."
-  },
-  {
-    id:"tomato",
-    emoji:"🍅",
-    name:"Cà chua",
-    scientific:"Solanum lycopersicum",
-    info:{
-      "Ánh sáng":"6–8 giờ/ngày – 30.000–50.000 lux",
-      "Nhiệt độ lý tưởng":"22–28°C",
-      "Độ ẩm đất":"60–70%",
-      "Độ pH đất":"6.0–6.8",
-      "Tưới nước":"Vừa phải, tránh úng"
-    },
-    note:"Cà chua phát triển tốt trong đất tơi xốp, nhiều dinh dưỡng."
-  },
-  {
-    id:"lettuce",
-    emoji:"🥬",
-    name:"Xà lách",
-    scientific:"Lactuca sativa",
-    info:{
-      "Ánh sáng":"Trung bình, tránh nắng gắt – 15.000–25.000 lux",
-      "Nhiệt độ lý tưởng":"18–24°C",
-      "Độ ẩm đất":"60–80%",
-      "Độ pH đất":"6.0–7.0",
-      "Tưới nước":"Thường xuyên, giữ ẩm"
-    },
-    note:"Xà lách ưa mát và phát triển nhanh."
-  },
-  {
-    id:"chili",
-    emoji:"🌶️",
-    name:"Ớt",
-    scientific:"Capsicum annuum",
-    info:{
-      "Ánh sáng":"Nhiều (trực tiếp) – 25.000–40.000 lux",
-      "Nhiệt độ lý tưởng":"25–32°C",
-      "Độ ẩm đất":"50–70%",
-      "Độ pH đất":"6.0–6.8",
-      "Tưới nước":"Vừa phải, tránh ngập"
-    },
-    note:"Ớt cần nhiều ánh sáng và nhiệt độ ấm."
-  },
-  {
-    id:"cucumber",
-    emoji:"🥒",
-    name:"Dưa leo",
-    scientific:"Cucumis sativus",
-    info:{
-      "Ánh sáng":"6–8 giờ/ngày – 20.000–30.000 lux",
-      "Nhiệt độ lý tưởng":"24–30°C",
-      "Độ ẩm đất":"65–80%",
-      "Độ pH đất":"6.0–7.0",
-      "Tưới nước":"Đều đặn, giữ ẩm vừa phải"
-    },
-    note:"Dưa leo cần ánh sáng mạnh và đất giàu dinh dưỡng."
-  },
-  {
-    id:"rose",
-    emoji:"🌹",
-    name:"Hoa Hồng",
-    scientific:"Rosa spp.",
-    info:{
-      "Ánh sáng":"Nhiều (trực tiếp)",
-      "Nhiệt độ lý tưởng":"25–32°C",
-      "Độ ẩm đất":"50–70%",
-      "Độ pH đất":"6.0–6.8",
-      "Tưới nước":"2–3 lần/tuần, tránh úng"
-    },
-    note:"Hoa hồng ưa nắng, đất tơi xốp."
-  },
-  {
-    id:"airplant",
-    emoji:"🌿",
-    name:"Cây không khí",
-    scientific:"Tillandsia spp.",
-    info:{
-      "Ánh sáng":"Ánh sáng gián tiếp – 10.000–20.000 lux",
-      "Nhiệt độ lý tưởng":"18–30°C",
-      "Độ ẩm không khí":"50–80%",
-      "Tưới nước":"Phun sương 2–3 lần/tuần"
-    },
-    note:"Cây không khí không cần đất, thích nơi thoáng."
-  },
-  {
-    id:"dendrobium",
-    emoji:"🌸",
-    name:"Phong lan Dendrobium",
-    scientific:"Dendrobium spp.",
-    info:{
-      "Ánh sáng":"Ánh sáng tán xạ – 15.000–25.000 lux",
-      "Nhiệt độ lý tưởng":"20–30°C",
-      "Độ ẩm không khí":"60–80%",
-      "Tưới nước":"Tưới khi giá thể khô, giảm tưới khi nghỉ"
-    },
-    note:"Dendrobium thích nơi thoáng, nhiều ánh sáng tán xạ."
-  },
-  {
-    id:"phalaenopsis",
-    emoji:"💮",
-    name:"Phong lan Hồ Điệp",
-    scientific:"Phalaenopsis spp.",
-    info:{
-      "Ánh sáng":"Ánh sáng khuếch tán – 8.000–15.000 lux",
-      "Nhiệt độ lý tưởng":"18–28°C",
-      "Độ ẩm không khí":"60–80%",
-      "Tưới nước":"2–3 lần/tuần, tránh đọng nước",
-      "Độ pH giá thể":"5.5–6.5"
-    },
-    note:"Lan Hồ Điệp thích ánh sáng nhẹ và không khí ẩm."
-  },
-  {
-    id:"birdnestfern",
-    emoji:"🌱",
-    name:"Dương xỉ tổ chim",
-    scientific:"Asplenium nidus",
-    info:{
-      "Ánh sáng":"Ánh sáng tán xạ – 5.000–15.000 lux",
-      "Nhiệt độ lý tưởng":"20–28°C",
-      "Độ ẩm đất":"60–80%",
-      "Tưới nước":"Giữ ẩm đều, không để úng"
-    },
-    note:"Dương xỉ ưa bóng và độ ẩm cao."
-  },
-  {
-    id:"cattleya",
-    emoji:"🌼",
-    name:"Phong lan Cattleya",
-    scientific:"Cattleya spp.",
-    info:{
-      "Ánh sáng":"Ánh sáng mạnh, tán xạ – 20.000–30.000 lux",
-      "Nhiệt độ lý tưởng":"22–32°C",
-      "Độ ẩm không khí":"60–80%",
-      "Tưới nước":"3–4 lần/tuần, giảm khi nghỉ"
-    },
-    note:"Cattleya có hoa to, cần sáng và thông thoáng."
-  }
+  {id:"rice",emoji:"🌾",name:"Lúa",scientific:"Oryza sativa",
+   info:{"Ánh sáng":"Cao – 40.000–80.000 lux","Nhiệt độ lý tưởng":"25–35°C","Độ ẩm đất":"70–90%","Độ pH đất":"5.5–6.5","Tưới nước":"Ngập liên tục"},
+   note:"Lúa cần môi trường ấm, ẩm và nhiều ánh sáng."},
+  {id:"tomato",emoji:"🍅",name:"Cà chua",scientific:"Solanum lycopersicum",
+   info:{"Ánh sáng":"6–8h/ngày – 30.000–50.000 lux","Nhiệt độ lý tưởng":"22–28°C","Độ ẩm đất":"60–70%","Độ pH đất":"6.0–6.8","Tưới nước":"Vừa phải"},
+   note:"Cà chua thích đất tơi xốp, nhiều dinh dưỡng."},
+  {id:"lettuce",emoji:"🥬",name:"Xà lách",scientific:"Lactuca sativa",
+   info:{"Ánh sáng":"Trung bình – 15.000–25.000 lux","Nhiệt độ lý tưởng":"18–24°C","Độ ẩm đất":"60–80%","Độ pH đất":"6.0–7.0","Tưới nước":"Giữ ẩm thường xuyên"},
+   note:"Xà lách ưa mát, phát triển nhanh."},
+  {id:"chili",emoji:"🌶️",name:"Ớt",scientific:"Capsicum annuum",
+   info:{"Ánh sáng":"Nhiều – 25.000–40.000 lux","Nhiệt độ lý tưởng":"25–32°C","Độ ẩm đất":"50–70%","Độ pH đất":"6.0–6.8","Tưới nước":"Vừa phải"},
+   note:"Ớt cần nhiều ánh sáng và nhiệt độ ấm."},
+  {id:"cucumber",emoji:"🥒",name:"Dưa leo",scientific:"Cucumis sativus",
+   info:{"Ánh sáng":"6–8h/ngày – 20.000–30.000 lux","Nhiệt độ lý tưởng":"24–30°C","Độ ẩm đất":"65–80%","Độ pH đất":"6.0–7.0","Tưới nước":"Giữ ẩm đều"},
+   note:"Dưa leo cần sáng mạnh, đất màu mỡ."},
+  {id:"rose",emoji:"🌹",name:"Hoa Hồng",scientific:"Rosa spp.",
+   info:{"Ánh sáng":"Nhiều (trực tiếp)","Nhiệt độ lý tưởng":"25–32°C","Độ ẩm đất":"50–70%","Độ pH đất":"6.0–6.8","Tưới nước":"2–3 lần/tuần"},
+   note:"Hoa hồng ưa nắng, đất thoáng."},
+  {id:"airplant",emoji:"🌿",name:"Cây không khí",scientific:"Tillandsia spp.",
+   info:{"Ánh sáng":"Gián tiếp – 10.000–20.000 lux","Nhiệt độ lý tưởng":"18–30°C","Độ ẩm không khí":"50–80%","Tưới nước":"Phun sương 2–3 lần/tuần"},
+   note:"Không cần đất, thích nơi thoáng."},
+  {id:"dendrobium",emoji:"🌸",name:"Phong lan Dendrobium",scientific:"Dendrobium spp.",
+   info:{"Ánh sáng":"Tán xạ – 15.000–25.000 lux","Nhiệt độ lý tưởng":"20–30°C","Độ ẩm không khí":"60–80%","Tưới nước":"Khi giá thể khô"},
+   note:"Lan ưa sáng tán xạ, thông thoáng."},
+  {id:"phalaenopsis",emoji:"💮",name:"Phong lan Hồ Điệp",scientific:"Phalaenopsis spp.",
+   info:{"Ánh sáng":"Khuếch tán – 8.000–15.000 lux","Nhiệt độ lý tưởng":"18–28°C","Độ ẩm không khí":"60–80%","Tưới nước":"2–3 lần/tuần","Độ pH giá thể":"5.5–6.5"},
+   note:"Lan Hồ Điệp thích sáng nhẹ, ẩm cao."},
+  {id:"birdnestfern",emoji:"🌱",name:"Dương xỉ tổ chim",scientific:"Asplenium nidus",
+   info:{"Ánh sáng":"Tán xạ – 5.000–15.000 lux","Nhiệt độ lý tưởng":"20–28°C","Độ ẩm đất":"60–80%","Tưới nước":"Giữ ẩm đều"},
+   note:"Dương xỉ ưa bóng, độ ẩm cao."},
+  {id:"cattleya",emoji:"🌼",name:"Phong lan Cattleya",scientific:"Cattleya spp.",
+   info:{"Ánh sáng":"Mạnh – 20.000–30.000 lux","Nhiệt độ lý tưởng":"22–32°C","Độ ẩm không khí":"60–80%","Tưới nước":"3–4 lần/tuần"},
+   note:"Cattleya có hoa to, cần sáng và thoáng."}
 ];
 
-/* UI references */
-const selectBtn = document.getElementById('selectBtn');
-const selectList = document.getElementById('selectList');
-const selEmoji = document.getElementById('selEmoji');
-const selText = document.getElementById('selText');
-const searchInput = document.getElementById('searchInput');
+const selectBtn=document.getElementById('selectBtn');
+const selectList=document.getElementById('selectList');
+const selEmoji=document.getElementById('selEmoji');
+const selText=document.getElementById('selText');
+const searchInput=document.getElementById('searchInput');
+const plantEmoji=document.getElementById('plantEmoji');
+const plantNameEl=document.getElementById('plantName');
+const plantScientific=document.getElementById('plantScientific');
+const infoBody=document.getElementById('infoBody');
+const noteEl=document.getElementById('note');
 
-const plantEmoji = document.getElementById('plantEmoji');
-const plantNameEl = document.getElementById('plantName');
-const plantScientific = document.getElementById('plantScientific');
-const infoBody = document.getElementById('infoBody');
-const noteEl = document.getElementById('note');
-
-/* Build list items (with emoji visible) */
 function buildList(filter=''){
-  selectList.innerHTML = '';
-  const q = filter.trim().toLowerCase();
-  plantList.forEach((p, idx) => {
-    const label = `${p.emoji} ${p.name}`;
-    if(q && !label.toLowerCase().includes(q) && !p.name.toLowerCase().includes(q) && !p.scientific.toLowerCase().includes(q)) return;
-    const item = document.createElement('div');
-    item.className = 'item';
-    item.setAttribute('role','option');
-    item.dataset.idx = idx;
-    item.innerHTML = `<span class="emoji">${p.emoji}</span><span class="txt">${p.name}</span><small style="margin-left:auto;color:#666;font-style:italic;margin-right:6px">${p.scientific}</small>`;
-    item.addEventListener('click', ()=> {
-      selectList.classList.remove('open');
-      selectBtn.setAttribute('aria-expanded','false');
-      selectBtn.blur();
-      chooseIndex(idx);
-    });
-    selectList.appendChild(item);
+  selectList.innerHTML='';
+  const q=filter.trim().toLowerCase();
+  let matches=0;
+  plantList.forEach((p,idx)=>{
+    const label=(p.name+p.scientific).toLowerCase();
+    if(q && !label.includes(q)) return;
+    matches++;
+    const div=document.createElement('div');
+    div.className='item';
+    div.dataset.idx=idx;
+    div.innerHTML=`<span class="emoji">${p.emoji}</span><span>${p.name}</span><small style="margin-left:auto;color:#666;font-style:italic;margin-right:6px">${p.scientific}</small>`;
+    div.onclick=()=>{selectList.classList.remove('open');chooseIndex(idx)};
+    selectList.appendChild(div);
   });
+  if(matches===1 && q) { // tự động chọn nếu chỉ còn 1 kết quả
+    const idx=selectList.firstChild?.dataset.idx;
+    if(idx) chooseIndex(idx);
+  }
 }
-
-/* Choose and render plant by index */
 function chooseIndex(idx){
-  const p = plantList[idx];
-  if(!p) return;
-  selEmoji.textContent = p.emoji;
-  selText.textContent = p.name;
-  plantEmoji.textContent = p.emoji;
-  plantNameEl.textContent = p.name;
-  plantScientific.textContent = p.scientific ? `(${p.scientific})` : '';
-  // render table
-  infoBody.innerHTML = '';
+  const p=plantList[idx]; if(!p) return;
+  selEmoji.textContent=p.emoji; selText.textContent=p.name;
+  plantEmoji.textContent=p.emoji; plantNameEl.textContent=p.name;
+  plantScientific.textContent=p.scientific?`(${p.scientific})`:'';
+  infoBody.innerHTML='';
   for(const [k,v] of Object.entries(p.info)){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${k}</td><td>${v}</td>`;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${k}</td><td>${v}</td>`;
     infoBody.appendChild(tr);
   }
-  noteEl.textContent = p.note || '';
-  // store current index in a data attribute for reference
-  selectBtn.dataset.current = idx;
+  noteEl.textContent=p.note||'';
+  selectBtn.dataset.current=idx;
 }
-
-/* Toggle dropdown */
-selectBtn.addEventListener('click', (e)=>{
-  const open = selectList.classList.toggle('open');
-  selectBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-  if(open){
-    // focus search inside custom list if present (we already have page-level search)
-    // scroll selected into view
-    const cur = selectBtn.dataset.current;
-    if(cur != null){
-      const target = selectList.querySelector(`[data-idx="${cur}"]`);
-      if(target) target.scrollIntoView({block:'nearest'});
-    }
-  }
-});
-
-/* Close when clicking outside */
-document.addEventListener('click', (e)=>{
+selectBtn.onclick=()=>{
+  const open=selectList.classList.toggle('open');
+  selectBtn.setAttribute('aria-expanded',open?'true':'false');
+};
+document.addEventListener('click',e=>{
   if(!document.getElementById('customSelect').contains(e.target)){
     selectList.classList.remove('open');
-    selectBtn.setAttribute('aria-expanded','false');
   }
 });
+searchInput.addEventListener('input',e=>buildList(e.target.value));
 
-/* Filter while typing */
-searchInput.addEventListener('input', (e)=>{
-  const q = e.target.value;
-  buildList(q);
-  // If only one match, auto-select it? We'll not auto-select—just show list filtered.
-});
-
-/* Keyboard support: open list by Enter on btn */
-selectBtn.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' || e.key === ' '){
-    e.preventDefault();
-    selectBtn.click();
-  }
-});
-
-/* On load: build list, pick a random plant and show it */
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
   buildList();
-  // pick random index
-  const idx = Math.floor(Math.random() * plantList.length);
-  chooseIndex(idx);
-  // ensure dropdown closed
-  selectList.classList.remove('open');
-  selectBtn.setAttribute('aria-expanded','false');
+  chooseIndex(Math.floor(Math.random()*plantList.length));
 });
 </script>
 </body>
