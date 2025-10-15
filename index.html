@@ -61,6 +61,12 @@
       margin-top: 4px;
       font-size: 15px;
     }
+    .plant-name {
+      text-align: center;
+      font-size: 20px;
+      color: #155d27;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -76,7 +82,7 @@
       </select>
     </div>
 
-    <h2 id="plantName" style="text-align:center; color:#155d27;"></h2>
+    <h2 id="plantName" class="plant-name"></h2>
     <p id="scientificName" class="scientific-name"></p>
 
     <table id="infoTable" style="display:none;">
@@ -94,6 +100,7 @@
   <script>
     const plants = [
       {
+        icon: "🌾",
         ten: "Lúa",
         tenKhoaHoc: "Oryza sativa",
         thongso: {
@@ -106,6 +113,7 @@
         mota: "Lúa cần môi trường ẩm, độ ẩm cao và nhiều ánh sáng. Phù hợp vùng nhiệt đới."
       },
       {
+        icon: "🍅",
         ten: "Cà chua",
         tenKhoaHoc: "Solanum lycopersicum",
         thongso: {
@@ -118,6 +126,7 @@
         mota: "Cà chua thích hợp đất tơi xốp, giàu dinh dưỡng, nhiều nắng."
       },
       {
+        icon: "🥬",
         ten: "Xà lách",
         tenKhoaHoc: "Lactuca sativa",
         thongso: {
@@ -130,6 +139,7 @@
         mota: "Xà lách thích hợp khí hậu mát mẻ, đất thoát nước tốt."
       },
       {
+        icon: "🌶️",
         ten: "Ớt",
         tenKhoaHoc: "Capsicum annuum",
         thongso: {
@@ -142,6 +152,7 @@
         mota: "Ớt cần nhiều ánh sáng, đất thoát nước tốt, tránh úng rễ."
       },
       {
+        icon: "🥒",
         ten: "Dưa leo",
         tenKhoaHoc: "Cucumis sativus",
         thongso: {
@@ -154,6 +165,7 @@
         mota: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng, ẩm nhưng thoát nước tốt."
       },
       {
+        icon: "🌹",
         ten: "Hoa Hồng",
         tenKhoaHoc: "Rosa hybrida",
         thongso: {
@@ -166,6 +178,7 @@
         mota: "Hoa hồng cần nhiều ánh sáng và không khí thoáng."
       },
       {
+        icon: "🌸",
         ten: "Phong lan Hồ Điệp",
         tenKhoaHoc: "Phalaenopsis amabilis",
         thongso: {
@@ -190,14 +203,14 @@
     plants.forEach(p => {
       const opt = document.createElement("option");
       opt.value = p.ten;
-      opt.textContent = p.ten;
+      opt.textContent = `${p.icon} ${p.ten}`;
       select.appendChild(opt);
     });
 
     function showInfo(name) {
       const plant = plants.find(p => p.ten.toLowerCase() === name.toLowerCase());
       if (!plant) return;
-      plantName.innerHTML = `🌿 ${plant.ten}`;
+      plantName.innerHTML = `${plant.icon} ${plant.ten}`;
       sciName.textContent = `🧬 ${plant.tenKhoaHoc}`;
       infoTable.style.display = "table";
       infoBody.innerHTML = "";
