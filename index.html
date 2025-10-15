@@ -1,172 +1,229 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌿 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
   <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #eafaea;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
+    /* chung */
+    :root{
+      --green:#1b5e20;
+      --light-green:#eafaea;
+      --panel:#fff;
+      --accent:#81c784;
+      --muted:#666;
     }
-    h1 {
-      color: #1b5e20;
-      margin-bottom: 10px;
-    }
-    .card {
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      padding: 20px;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th {
-      background-color: #81c784;
-      color: #fff;
-      padding: 10px;
-    }
-    td {
-      border-bottom: 1px solid #c8e6c9;
-      padding: 8px;
-      text-align: left;
-    }
-    #plant-name {
-      font-size: 1.4em;
-      color: #1b5e20;
-    }
-    #scientific-name {
-      font-style: italic;
-      color: #388e3c;
-      margin-top: 2px;
-      margin-bottom: 10px;
-    }
-    select, input {
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #81c784;
-      margin: 5px;
-    }
+    html,body{height:100%; margin:0; font-family: "Segoe UI", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif; background:var(--light-green); color:#111;}
+    .wrap{max-width:820px; margin:30px auto; padding:22px;}
+    h1{ text-align:center; color:var(--green); margin:10px 0 18px; font-weight:700;}
+    .card{background:var(--panel); border-radius:14px; padding:20px; box-shadow:0 6px 18px rgba(0,0,0,0.06);}
+    .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-start;}
+    label{font-weight:600; color:var(--green);}
+    input[type="text"], select{padding:8px 10px; border-radius:8px; border:1px solid #cfead1; min-width:200px;}
+    button{padding:8px 10px; border-radius:8px; border:1px solid var(--accent); background:transparent; cursor:pointer;}
+    .title-block{ text-align:center; margin-top:18px;}
+    #plant-icon{font-size:38px; line-height:1;}
+    #plant-name{font-size:1.3rem; font-weight:700; color:var(--green); margin-top:6px;}
+    #scientific-name{font-style:italic; color:#2e7d32; margin-top:6px;}
+    table{width:100%; border-collapse:collapse; margin-top:16px; table-layout:auto;}
+    th,td{padding:12px 14px; text-align:left;}
+    th{background:var(--accent); color:#fff;}
+    tr:hover{background:#f6fffa;}
+    .note{font-style:italic; color:var(--muted); margin-top:12px;}
+    /* đảm bảo emoji có font fallback ở nhiều OS (khuyến nghị nhưng không guaranteed trong <option>) */
+    select, option { font-family: "Segoe UI Emoji", "Noto Color Emoji", "Apple Color Emoji", "Segoe UI", sans-serif; }
   </style>
 </head>
 <body>
-  <h1>🌿 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
-  <div class="card">
-    <div>
-      🔍 <b>Tìm cây:</b>
-      <input type="text" id="searchInput" placeholder="Nhập tên cây (ví dụ: hoa, ớt, dưa...)" oninput="searchPlant()">
-      <b>Hoặc chọn cây:</b>
-      <select id="plantSelect" onchange="updatePlantInfo()"></select>
-    </div>
+  <div class="wrap">
+    <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
+    <div class="card">
+      <div class="controls" aria-label="controls">
+        <label for="search">🔍 Tìm cây:</label>
+        <input id="search" type="text" placeholder="Nhập tên cây (ví dụ: Hoa, Ớt, Dưa...)" />
+        <label for="select">Hoặc chọn cây:</label>
+        <select id="select" aria-label="Chọn cây"></select>
+        <button id="rndBtn" title="Chọn cây ngẫu nhiên">🔀 Ngẫu nhiên</button>
+      </div>
 
-    <div style="margin-top:15px">
-      <div id="plant-icon" style="font-size:40px"></div>
-      <div id="plant-name"></div>
-      <div id="scientific-name"></div>
-    </div>
+      <div class="title-block" role="region" aria-live="polite">
+        <div id="plant-icon" aria-hidden="true"></div>
+        <div id="plant-name"></div>
+        <div id="scientific-name"></div>
+      </div>
 
-    <table>
-      <thead>
-        <tr><th>Thông số</th><th>Giá trị phù hợp</th></tr>
-      </thead>
-      <tbody id="infoTable"></tbody>
-    </table>
-    <p id="note" style="color:#33691e; font-style:italic; margin-top:10px"></p>
+      <table aria-describedby="note">
+        <thead>
+          <tr><th>Thông số</th><th>Giá trị phù hợp</th></tr>
+        </thead>
+        <tbody id="info"></tbody>
+      </table>
+
+      <p id="note" class="note"></p>
+    </div>
   </div>
 
   <script>
-    const plants = {
-      "Phong lan Hồ Điệp": {
-        icon: "🌸",
-        scientificName: "Phalaenopsis amabilis",
-        light: "Ánh sáng yếu – trung bình – 8.000–15.000 lux",
-        temp: "22–28°C",
-        humidity: "60–80%",
-        watering: "2–3 lần/tuần, tránh đọng nước",
-        pH: "5.5–6.5",
-        note: "Lan Hồ Điệp cần ánh sáng nhẹ, môi trường ẩm thoáng khí, thích hợp trưng bày trong nhà."
+    // Dữ liệu: mảng (index an toàn cho random)
+    const plants = [
+      {
+        id: "rice",
+        icon: "🌾",
+        name: "Lúa",
+        sci: "Oryza sativa",
+        info: {
+          "Ánh sáng": "Cao (trực tiếp) – 40.000–80.000 lux",
+          "Nhiệt độ lý tưởng": "25–35°C",
+          "Độ ẩm đất": "70–90%",
+          "Độ pH đất": "5.5–6.5",
+          "Nước tưới": "Ngập/đều đặn giai đoạn sinh trưởng"
+        },
+        note: "Lúa cần môi trường ấm, độ ẩm cao và nhiều ánh sáng."
       },
-      "Dưa leo": {
-        icon: "🥒",
-        scientificName: "Cucumis sativus",
-        light: "6–8 giờ/ngày – 20.000–30.000 lux",
-        temp: "24–30°C",
-        humidity: "65–80%",
-        watering: "Giữ ẩm vừa, tưới đều",
-        pH: "6.0–7.0",
-        note: "Cần ánh sáng mạnh và đất thoát nước tốt."
-      },
-      "Cà chua": {
+      {
+        id: "tomato",
         icon: "🍅",
-        scientificName: "Solanum lycopersicum",
-        light: "6–10 giờ/ngày – 20.000–40.000 lux",
-        temp: "20–28°C",
-        humidity: "60–75%",
-        watering: "Giữ ẩm đều, không đọng nước",
-        pH: "5.8–7.0",
-        note: "Cà chua cần nhiều sáng, bón phân định kỳ giúp sai quả."
+        name: "Cà chua",
+        sci: "Solanum lycopersicum",
+        info: {
+          "Ánh sáng": "6–8 giờ/ngày – 30.000–50.000 lux",
+          "Nhiệt độ lý tưởng": "22–28°C",
+          "Độ ẩm đất": "60–70%",
+          "Độ pH đất": "6.0–6.8",
+          "Tưới nước": "Vừa phải, tránh úng rễ"
+        },
+        note: "Cà chua phát triển tốt trong khí hậu ôn hòa, đất tơi xốp."
       },
-      "Rau cải": {
+      {
+        id: "lettuce",
         icon: "🥬",
-        scientificName: "Brassica rapa",
-        light: "4–6 giờ/ngày – 15.000–25.000 lux",
-        temp: "18–25°C",
-        humidity: "60–85%",
-        watering: "Giữ ẩm thường xuyên",
-        pH: "6.0–6.8",
-        note: "Rau cải dễ trồng, thích hợp nơi thoáng mát, đủ ẩm."
+        name: "Xà lách",
+        sci: "Lactuca sativa",
+        info: {
+          "Ánh sáng": "Trung bình, tránh nắng gắt – 15.000–25.000 lux",
+          "Nhiệt độ lý tưởng": "18–24°C",
+          "Độ ẩm đất": "60–80%",
+          "Độ pH đất": "6.0–7.0",
+          "Tưới nước": "Thường xuyên, giữ ẩm"
+        },
+        note: "Xà lách ưa mát, phát triển nhanh."
+      },
+      {
+        id: "chili",
+        icon: "🌶️",
+        name: "Ớt",
+        sci: "Capsicum annuum",
+        info: {
+          "Ánh sáng": "Nhiều (trực tiếp) – 25.000–40.000 lux",
+          "Nhiệt độ lý tưởng": "25–32°C",
+          "Độ ẩm đất": "50–70%",
+          "Độ pH đất": "6.0–6.8",
+          "Tưới nước": "Vừa phải, tránh ngập"
+        },
+        note: "Ớt cần nhiều ánh sáng và nhiệt độ ấm."
+      },
+      {
+        id: "cucumber",
+        icon: "🥒",
+        name: "Dưa leo",
+        sci: "Cucumis sativus",
+        info: {
+          "Ánh sáng": "6–8 giờ/ngày – 20.000–30.000 lux",
+          "Nhiệt độ lý tưởng": "24–30°C",
+          "Độ ẩm đất": "65–80%",
+          "Độ pH đất": "6.0–7.0",
+          "Tưới nước": "Đều đặn, giữ ẩm vừa phải"
+        },
+        note: "Dưa leo cần ánh sáng mạnh, đất giàu dinh dưỡng."
+      },
+      {
+        id: "phalaenopsis",
+        icon: "🌸",
+        name: "Phong lan Hồ Điệp",
+        sci: "Phalaenopsis amabilis",
+        info: {
+          "Ánh sáng": "Ánh sáng khuếch tán – 8.000–15.000 lux",
+          "Nhiệt độ lý tưởng": "22–28°C",
+          "Độ ẩm không khí": "60–80%",
+          "Tưới nước": "2–3 lần/tuần, tránh đọng nước",
+          "Độ pH giá thể": "5.5–6.5"
+        },
+        note: "Lan Hồ Điệp cần ánh sáng nhẹ, môi trường ẩm và thoáng khí."
       }
-    };
+    ];
 
-    // === Khởi tạo dropdown ===
-    const plantSelect = document.getElementById("plantSelect");
-    Object.keys(plants).forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p;
-      opt.textContent = p;
-      plantSelect.appendChild(opt);
-    });
+    // Elements
+    const selectEl = document.getElementById('select');
+    const searchEl = document.getElementById('search');
+    const iconEl = document.getElementById('plant-icon');
+    const nameEl = document.getElementById('plant-name');
+    const sciEl = document.getElementById('scientific-name');
+    const infoEl = document.getElementById('info');
+    const noteEl = document.getElementById('note');
+    const rndBtn = document.getElementById('rndBtn');
 
-    // === Hiển thị cây ngẫu nhiên khi tải trang ===
-    window.onload = () => {
-      const names = Object.keys(plants);
-      const randomPlant = names[Math.floor(Math.random() * names.length)];
-      plantSelect.value = randomPlant;
-      updatePlantInfo();
-    };
-
-    function updatePlantInfo() {
-      const name = plantSelect.value;
-      const data = plants[name];
-      document.getElementById("plant-icon").textContent = data.icon;
-      document.getElementById("plant-name").textContent = name;
-      document.getElementById("scientific-name").textContent = data.scientificName ? `(${data.scientificName})` : "";
-      document.getElementById("infoTable").innerHTML = `
-        <tr><td>Ánh sáng</td><td>${data.light}</td></tr>
-        <tr><td>Nhiệt độ lý tưởng</td><td>${data.temp}</td></tr>
-        <tr><td>Độ ẩm không khí</td><td>${data.humidity}</td></tr>
-        <tr><td>Tưới nước</td><td>${data.watering}</td></tr>
-        <tr><td>Độ pH giá thể</td><td>${data.pH}</td></tr>
-      `;
-      document.getElementById("note").textContent = data.note;
+    // Populate select with plain names (no emoji inside options to avoid Windows issue)
+    function populateSelect() {
+      selectEl.innerHTML = '';
+      plants.forEach((p, idx) => {
+        const opt = document.createElement('option');
+        opt.value = String(idx);           // use index as value (safe)
+        opt.textContent = p.name;          // plain text here
+        selectEl.appendChild(opt);
+      });
     }
 
+    // Update UI for given index
+    function showByIndex(idx) {
+      const p = plants[idx];
+      if (!p) return;
+      // display icon separately (ensures it shows)
+      iconEl.textContent = p.icon;
+      nameEl.textContent = p.name;
+      sciEl.textContent = p.sci ? `(${p.sci})` : '';
+      // fill info table
+      infoEl.innerHTML = '';
+      for (const [k,v] of Object.entries(p.info)) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${k}</td><td>${v}</td>`;
+        infoEl.appendChild(tr);
+      }
+      noteEl.textContent = p.note || '';
+      // set select visually (if not already)
+      selectEl.value = String(idx);
+    }
+
+    // Select random index and show
+    function pickRandom() {
+      const idx = Math.floor(Math.random() * plants.length);
+      showByIndex(idx);
+    }
+
+    // Search: find first plant whose name includes query (case-insensitive)
     function searchPlant() {
-      const query = document.getElementById("searchInput").value.trim().toLowerCase();
-      const found = Object.keys(plants).find(p => p.toLowerCase().includes(query));
-      if (found) {
-        plantSelect.value = found;
-        updatePlantInfo();
-      }
+      const q = searchEl.value.trim().toLowerCase();
+      if (!q) return;
+      const idx = plants.findIndex(p => p.name.toLowerCase().includes(q));
+      if (idx >= 0) showByIndex(idx);
     }
+
+    // Event handlers
+    selectEl.addEventListener('change', e => {
+      const idx = Number(e.target.value);
+      if (!Number.isNaN(idx)) showByIndex(idx);
+    });
+    searchEl.addEventListener('input', () => {
+      // small debounce not necessary here; immediate feedback
+      searchPlant();
+    });
+    rndBtn.addEventListener('click', pickRandom);
+
+    // Init on DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      populateSelect();
+      // choose random on load
+      pickRandom();
+    });
   </script>
 </body>
 </html>
