@@ -1,205 +1,225 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌿 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background: #e9f9ec;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #137b26;
-      font-size: 28px;
-    }
-    .container {
-      max-width: 800px;
-      margin: 30px auto;
-      background: #fff;
-      border-radius: 20px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-      padding: 25px;
-    }
-    .search-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    input[type="text"],
-    select {
-      padding: 10px;
-      border: 1px solid #bbb;
-      border-radius: 8px;
-      font-size: 15px;
-      width: 200px;
-      outline: none;
-      transition: border 0.2s;
-    }
-    input[type="text"]:focus {
-      border-color: #4caf50;
-    }
-    .plant-info {
-      text-align: center;
-      margin-top: 25px;
-    }
-    .plant-info img {
-      width: 80px;
-      height: 80px;
-    }
-    .plant-info h2 {
-      margin: 10px 0 5px;
-      color: #137b26;
-    }
-    .plant-info em {
-      color: #2c6e49;
-      font-size: 15px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th {
-      background: #7ac76d;
-      color: white;
-      padding: 10px;
-      text-align: left;
-    }
-    td {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      transition: background 0.2s;
-    }
-    tr:hover td {
-      background: #e0f9e2;
-    }
-    .note {
-      font-style: italic;
-      margin-top: 8px;
-      color: #555;
-    }
-    /* Gợi ý tìm kiếm */
-    .suggestions {
-      position: absolute;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      max-height: 180px;
-      overflow-y: auto;
-      width: 200px;
-      z-index: 10;
-    }
-    .suggestion-item {
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    .suggestion-item:hover {
-      background: #defade;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</title>
+<style>
+  body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #e9fce9;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #0c8a43;
+    margin-bottom: 25px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: auto;
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  input[type="text"] {
+    padding: 10px 14px;
+    width: 60%;
+    border: 2px solid #a4e5a4;
+    border-radius: 8px;
+    outline: none;
+  }
+
+  input[type="text"]:focus {
+    border-color: #44c767;
+  }
+
+  /* Gợi ý tìm kiếm */
+  .suggestions {
+    position: absolute;
+    top: 45px;
+    left: calc(20%);
+    width: 60%;
+    background: white;
+    border: 1px solid #bfe8bf;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+  }
+
+  .suggestions div {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+  .suggestions div:hover {
+    background-color: #dfffe0;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  th {
+    background: #a2e0a2;
+    text-align: left;
+    padding: 10px;
+  }
+
+  td {
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    transition: background 0.2s;
+  }
+
+  tr:hover td {
+    background-color: #e8fce8;
+  }
+
+  .plant-info {
+    text-align: center;
+  }
+
+  .plant-info img {
+    width: 70px;
+    margin: 10px 0;
+  }
+
+  .note {
+    font-style: italic;
+    color: #666;
+    margin-top: 8px;
+  }
+</style>
 </head>
 <body>
   <h1>🌿 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
+
   <div class="container">
-    <div class="search-area">
-      <label>🔍 Tìm cây:</label>
-      <div style="position: relative;">
-        <input type="text" id="searchInput" placeholder="Nhập tên cây..." autocomplete="off" />
-        <div id="suggestions" class="suggestions" style="display:none;"></div>
-      </div>
-      <label>Hoặc chọn cây:</label>
-      <select id="plantSelect"></select>
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="🔍 Nhập tên cây...">
+      <div id="suggestions" class="suggestions"></div>
     </div>
 
-    <div class="plant-info" id="plantInfo"></div>
+    <div id="plant-info" class="plant-info"></div>
   </div>
 
-  <script>
-    const plants = [
-      { name: "🌾 Lúa", sci: "Oryza sativa", light: "Nhiều (25.000–40.000 lux)", temp: "25–35°C", humidity: "60–80%", ph: "5.5–6.5", water: "Ngập vừa", note: "Lúa cần nhiều nước và ánh sáng trực tiếp." },
-      { name: "🍅 Cà chua", sci: "Solanum lycopersicum", light: "Nhiều – 25.000–40.000 lux", temp: "20–30°C", humidity: "50–70%", ph: "6.0–6.8", water: "Vừa phải", note: "Cà chua thích đất tơi xốp, thoát nước tốt." },
-      { name: "🥬 Xà lách", sci: "Lactuca sativa", light: "Trung bình – 10.000–20.000 lux", temp: "15–25°C", humidity: "60–80%", ph: "6.0–7.0", water: "Đều, tránh ngập", note: "Xà lách cần môi trường mát mẻ, ẩm." },
-      { name: "🌶️ Ớt", sci: "Capsicum annuum", light: "Nhiều – 25.000–40.000 lux", temp: "25–32°C", humidity: "50–70%", ph: "6.0–6.8", water: "Vừa phải", note: "Ớt cần nhiều ánh sáng và nhiệt độ ấm." },
-      { name: "🥒 Dưa leo", sci: "Cucumis sativus", light: "Nhiều – 25.000–35.000 lux", temp: "25–30°C", humidity: "60–80%", ph: "5.5–7.0", water: "Nhiều", note: "Dưa leo cần nước đều và ánh sáng tốt." },
-      { name: "🌸 Phong lan Hồ Điệp", sci: "Phalaenopsis spp.", light: "Tán xạ – 10.000–20.000 lux", temp: "22–28°C", humidity: "60–80%", ph: "5.5–6.5", water: "Ít, ẩm không khí cao", note: "Lan cần ánh sáng gián tiếp và không khí thoáng." }
-    ];
+<script>
+const plants = {
+  "Ớt": {
+    name: "Ớt",
+    latin: "Capsicum annuum",
+    icon: "https://img.icons8.com/emoji/96/hot-pepper.png",
+    info: [
+      ["Ánh sáng", "Nhiều (trực tiếp) – 25.000–40.000 lux"],
+      ["Nhiệt độ lý tưởng", "25–32°C"],
+      ["Độ ẩm đất", "50–70%"],
+      ["Độ pH đất", "6.0–6.8"],
+      ["Tưới nước", "Vừa phải, tránh ngập"]
+    ],
+    note: "Ớt cần nhiều ánh sáng và nhiệt độ ấm."
+  },
+  "Cà chua": {
+    name: "Cà chua",
+    latin: "Solanum lycopersicum",
+    icon: "https://img.icons8.com/emoji/96/tomato.png",
+    info: [
+      ["Ánh sáng", "Nhiều – 20.000–35.000 lux"],
+      ["Nhiệt độ lý tưởng", "20–28°C"],
+      ["Độ ẩm đất", "60–80%"],
+      ["Độ pH đất", "6.0–6.8"],
+      ["Tưới nước", "Đều đặn, tránh úng"]
+    ],
+    note: "Cà chua phát triển tốt ở nơi có nhiều nắng và đất tơi xốp."
+  },
+  "Dưa leo": {
+    name: "Dưa leo",
+    latin: "Cucumis sativus",
+    icon: "https://img.icons8.com/emoji/96/cucumber.png",
+    info: [
+      ["Ánh sáng", "Nhiều – 25.000–40.000 lux"],
+      ["Nhiệt độ lý tưởng", "24–30°C"],
+      ["Độ ẩm đất", "65–80%"],
+      ["Độ pH đất", "6.0–7.0"],
+      ["Tưới nước", "Nhiều, giữ ẩm liên tục"]
+    ],
+    note: "Dưa leo ưa khí hậu ấm, đất ẩm và nhiều nắng."
+  }
+};
 
-    const select = document.getElementById("plantSelect");
-    const infoDiv = document.getElementById("plantInfo");
-    const searchInput = document.getElementById("searchInput");
-    const suggestions = document.getElementById("suggestions");
+// ---- Gợi ý tìm kiếm ----
+const search = document.getElementById("search");
+const suggestions = document.getElementById("suggestions");
+const plantInfo = document.getElementById("plant-info");
 
-    plants.forEach(p => {
-      const opt = document.createElement("option");
-      opt.textContent = p.name;
-      select.appendChild(opt);
-    });
+search.addEventListener("input", () => {
+  const query = search.value.toLowerCase().trim();
+  suggestions.innerHTML = "";
 
-    function showPlant(p) {
-      infoDiv.innerHTML = `
-        <div class="plant-info">
-          <div style="font-size:60px;">${p.name.split(" ")[0]}</div>
-          <h2>${p.name.split(" ").slice(1).join(" ")}</h2>
-          <em>${p.sci}</em>
-          <table>
-            <tr><th>Thông số</th><th>Giá trị phù hợp</th></tr>
-            <tr><td>Ánh sáng</td><td>${p.light}</td></tr>
-            <tr><td>Nhiệt độ lý tưởng</td><td>${p.temp}</td></tr>
-            <tr><td>Độ ẩm đất</td><td>${p.humidity}</td></tr>
-            <tr><td>Độ pH đất</td><td>${p.ph}</td></tr>
-            <tr><td>Tưới nước</td><td>${p.water}</td></tr>
-          </table>
-          <div class="note">${p.note}</div>
-        </div>`;
-    }
+  if (!query) return;
 
-    select.addEventListener("change", () => {
-      const plant = plants.find(p => p.name === select.value);
-      if (plant) showPlant(plant);
-    });
-
-    searchInput.addEventListener("input", () => {
-      const val = searchInput.value.toLowerCase();
+  const matched = Object.keys(plants).filter(p => p.toLowerCase().includes(query));
+  
+  matched.forEach(name => {
+    const div = document.createElement("div");
+    div.textContent = name;
+    div.onclick = () => {
+      search.value = name;
       suggestions.innerHTML = "";
-      if (!val) { suggestions.style.display = "none"; return; }
-      const matches = plants.filter(p => p.name.toLowerCase().includes(val));
-      if (matches.length === 0) { suggestions.style.display = "none"; return; }
+      showPlant(name);
+    };
+    suggestions.appendChild(div);
+  });
 
-      matches.forEach(p => {
-        const div = document.createElement("div");
-        div.textContent = p.name;
-        div.className = "suggestion-item";
-        div.onclick = () => {
-          searchInput.value = p.name;
-          showPlant(p);
-          select.value = p.name;
-          suggestions.style.display = "none";
-        };
-        suggestions.appendChild(div);
-      });
-      suggestions.style.display = "block";
+  // Tự động hiển thị nếu trùng hoàn toàn
+  if (plants[capitalize(query)]) {
+    showPlant(capitalize(query));
+  }
+});
 
-      // Nếu khớp chính xác, tự động hiển thị
-      const exactMatch = plants.find(p => p.name.replace(/[^a-zA-ZÀ-ỹ]/g, "").toLowerCase().includes(val));
-      if (exactMatch) {
-        showPlant(exactMatch);
-        select.value = exactMatch.name;
-      }
-    });
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-    document.addEventListener("click", e => {
-      if (!searchInput.contains(e.target)) suggestions.style.display = "none";
-    });
+// ---- Hiển thị thông tin cây ----
+function showPlant(name) {
+  const p = plants[name];
+  if (!p) {
+    plantInfo.innerHTML = "<p>❌ Không tìm thấy thông tin cây.</p>";
+    return;
+  }
 
-    // Hiển thị ngẫu nhiên 1 cây khi mở web
-    showPlant(plants[Math.floor(Math.random() * plants.length)]);
-  </script>
+  let table = `
+    <img src="${p.icon}" alt="${p.name}">
+    <h2>${p.name}</h2>
+    <em>(${p.latin})</em>
+    <table>
+      <tr><th>Thông số</th><th>Giá trị phù hợp</th></tr>
+      ${p.info.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join("")}
+    </table>
+    <p class="note">${p.note}</p>
+  `;
+
+  plantInfo.innerHTML = table;
+}
+</script>
 </body>
 </html>
