@@ -1,142 +1,159 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bảng tra cứu chỉ số cây trồng</title>
-  <style>
-    body {
-      font-family: "Segoe UI", sans-serif;
-      background-color: #eaf5e1;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 40px auto;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 20px 30px;
-    }
-    h1 {
-      text-align: center;
-      color: #2e7d32;
-    }
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-top: 10px;
-    }
-    .search-bar {
-      text-align: center;
-      margin-bottom: 15px;
-    }
-    .search-bar input {
-      width: 80%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-    }
-    th {
-      background-color: #a5d6a7;
-      color: #333;
-      padding: 8px;
-      border-radius: 6px 6px 0 0;
-    }
-    td {
-      border-bottom: 1px solid #ddd;
-      padding: 8px;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    .note {
-      font-style: italic;
-      color: #555;
-      margin-top: 10px;
-    }
-    .btn {
-      display: inline-block;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 20px;
-      text-align: center;
-    }
-    .btn:hover {
-      background-color: #43a047;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
   <div class="container">
-    <h1>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
+    <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
 
     <div class="search-bar">
-      <input type="text" id="searchBox" placeholder="Gõ tên cây (ví dụ: ớt, lan, cây không khí)">
+      <label>🔍 Tìm cây:</label>
+      <input type="text" id="searchInput" placeholder="Gõ tên cây (ví dụ: ớt, lan, cây không khí)">
+      <span>Hoặc chọn cây:</span>
+      <select id="plantSelect"></select>
     </div>
 
-    <h2 id="plantName">Hoa Hồng</h2>
-    <p style="text-align:center; font-style:italic;">(Rosa spp.)</p>
+    <div class="plant-info" id="plantInfo">
+      <div class="plant-header">
+        <div id="plantIcon" style="font-size:48px;">🌱</div>
+        <h2 id="plantName">Tên cây</h2>
+        <p id="plantLatin"><em>(Tên khoa học)</em></p>
+      </div>
 
-    <table id="plantTable">
-      <thead>
-        <tr>
-          <th>Thông số</th>
-          <th>Giá trị phù hợp</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Ánh sáng</td><td>Nhiều (trực tiếp)</td></tr>
-        <tr><td>Nhiệt độ</td><td>25–32°C</td></tr>
-        <tr><td>Độ ẩm đất</td><td>50–70%</td></tr>
-        <tr><td>pH</td><td>6.0–6.8</td></tr>
-        <tr><td>Tưới</td><td>2–3 lần/tuần</td></tr>
-      </tbody>
-    </table>
+      <table>
+        <thead>
+          <tr>
+            <th>Thông số</th>
+            <th>Giá trị phù hợp</th>
+          </tr>
+        </thead>
+        <tbody id="paramTable">
+          <tr><td>Ánh sáng</td><td><input></td></tr>
+          <tr><td>Nhiệt độ</td><td><input></td></tr>
+          <tr><td>Độ ẩm đất</td><td><input></td></tr>
+          <tr><td>pH</td><td><input></td></tr>
+          <tr><td>Tưới</td><td><input></td></tr>
+        </tbody>
+      </table>
 
-    <p class="note">Ưa nắng, đất tơi xốp.</p>
+      <p id="note"><em>Chọn cây để xem thông số khuyến nghị.</em></p>
 
-    <div style="text-align:center;">
-      <button id="applyBtn" class="btn">🌿 Áp dụng thông số</button>
+      <div style="text-align:center; margin-top:20px;">
+        <button id="saveBtn" class="btn btn-secondary">💾 Lưu thay đổi</button>
+        <button id="applyBtn" class="btn btn-success">🌿 Áp dụng thông số</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // ⚙️ Thay IP này bằng IP của ESP32 / IoT Gateway
-    const DEVICE_IP = "http://192.168.1.50";
+    // 🌱 Dữ liệu các loại cây (bạn có thể thêm thoải mái)
+    const plants = [
+      {
+        name: "Hoa Hồng",
+        latin: "Rosa spp.",
+        icon: "🌹",
+        as: "Nhiều (trực tiếp)",
+        nd: "25–32°C",
+        da: "50–70%",
+        ph: "6.0–6.8",
+        tuoi: "2–3 lần/tuần",
+        note: "Ưa nắng, đất tơi xốp."
+      },
+      {
+        name: "Cà chua",
+        latin: "Solanum lycopersicum",
+        icon: "🍅",
+        as: "6–8 giờ/ngày – 30.000–50.000 lux",
+        nd: "22–28°C",
+        da: "60–70%",
+        ph: "6.0–6.8",
+        tuoi: "Vừa phải, tránh úng",
+        note: "Cần nhiều ánh sáng, đất tơi xốp, thoát nước tốt."
+      },
+      {
+        name: "Lúa",
+        latin: "Oryza sativa",
+        icon: "🌾",
+        as: "Ánh sáng đầy đủ",
+        nd: "20–35°C",
+        da: "80–90%",
+        ph: "5.5–7.0",
+        tuoi: "Thường xuyên giữ ẩm",
+        note: "Phù hợp vùng đồng bằng, ưa nước."
+      },
+      {
+        name: "Lan Hồ Điệp",
+        latin: "Phalaenopsis spp.",
+        icon: "🌸",
+        as: "Gián tiếp, 10.000–15.000 lux",
+        nd: "18–28°C",
+        da: "60–80%",
+        ph: "5.5–6.5",
+        tuoi: "2–3 lần/tuần, phun sương nhẹ",
+        note: "Ưa ẩm, tránh nắng gắt."
+      },
+      {
+        name: "Xương rồng",
+        latin: "Cactaceae",
+        icon: "🌵",
+        as: "Nhiều ánh sáng trực tiếp",
+        nd: "25–35°C",
+        da: "30–50%",
+        ph: "6.0–7.5",
+        tuoi: "1 lần/tuần hoặc ít hơn",
+        note: "Chịu hạn tốt, không ưa ẩm."
+      }
+    ];
 
-    document.getElementById('applyBtn').addEventListener('click', async () => {
-      const rows = document.querySelectorAll("#plantTable tbody tr");
-      let data = {};
+    // 🌼 Khởi tạo danh sách
+    const select = document.getElementById("plantSelect");
+    plants.forEach((p, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `${p.icon} ${p.name}`;
+      select.appendChild(opt);
+    });
 
-      rows.forEach(row => {
-        const key = row.children[0].innerText.trim();
-        const value = row.children[1].innerText.trim();
-        switch (key) {
-          case "Ánh sáng": data.as = value; break;
-          case "Nhiệt độ": data.nhietdo = value.replace("°C", ""); break;
-          case "Độ ẩm đất": data.doam = value.replace("%", ""); break;
-          case "pH": data.ph = value; break;
-          case "Tưới": data.tuoi = value; break;
-        }
-      });
+    const info = document.getElementById("plantInfo");
+    const rows = document.querySelectorAll("#paramTable input");
 
-      const tenCay = document.getElementById("plantName").innerText.trim();
-      data.cay = tenCay;
+    function showPlant(i) {
+      const p = plants[i];
+      document.getElementById("plantIcon").textContent = p.icon;
+      document.getElementById("plantName").textContent = p.name;
+      document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
+      rows[0].value = p.as;
+      rows[1].value = p.nd;
+      rows[2].value = p.da;
+      rows[3].value = p.ph;
+      rows[4].value = p.tuoi;
+      document.getElementById("note").textContent = p.note;
+    }
 
-      console.log("📤 Gửi dữ liệu:", data);
+    select.addEventListener("change", e => showPlant(e.target.value));
+    showPlant(0); // mặc định cây đầu tiên
+
+    // 💾 Lưu thay đổi
+    document.getElementById("saveBtn").addEventListener("click", () => {
+      const i = select.value;
+      plants[i].as = rows[0].value;
+      plants[i].nd = rows[1].value;
+      plants[i].da = rows[2].value;
+      plants[i].ph = rows[3].value;
+      plants[i].tuoi = rows[4].value;
+      alert("✅ Đã lưu thay đổi cho " + plants[i].name);
+    });
+
+    // 🌿 Áp dụng thông số sang IoT
+    const DEVICE_IP = "http://192.168.1.50"; // ⚙️ thay bằng IP của ESP32/Arduino Gateway
+
+    document.getElementById("applyBtn").addEventListener("click", async () => {
+      const i = select.value;
+      const data = plants[i];
 
       try {
         const res = await fetch(`${DEVICE_IP}/apply`, {
@@ -145,16 +162,27 @@
           body: JSON.stringify(data)
         });
 
-        if (res.ok) {
-          alert(`✅ Đã gửi thông số của ${data.cay} đến thiết bị IoT`);
-        } else {
-          alert("⚠️ Gửi thất bại! Kiểm tra kết nối thiết bị.");
-        }
+        if (res.ok) alert(`🌿 Đã gửi thông số của ${data.name} đến thiết bị!`);
+        else alert("⚠️ Gửi thất bại, kiểm tra thiết bị IoT!");
       } catch (err) {
+        alert("❌ Không thể kết nối đến thiết bị.");
         console.error(err);
-        alert("❌ Lỗi khi gửi dữ liệu (thiết bị có thể chưa online).");
       }
     });
   </script>
+
+  <style>
+    body { font-family: "Segoe UI", sans-serif; background-color: #eaf7e5; color: #333; }
+    .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 20px; padding: 30px; box-shadow: 0 0 10px #ccc; }
+    h1 { text-align: center; color: #2e7d32; }
+    .search-bar { text-align: center; margin-bottom: 20px; }
+    select, input { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #c8e6c9; padding: 10px; text-align: left; }
+    th { background: #a5d6a7; }
+    .btn { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; margin: 5px; font-size: 15px; }
+    .btn-success { background: #4CAF50; color: white; }
+    .btn-secondary { background: #1976d2; color: white; }
+  </style>
 </body>
 </html>
