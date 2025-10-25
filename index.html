@@ -233,15 +233,23 @@
     ];
 
     const select = document.getElementById("plantSelect");
-    plants.forEach((p, i) => {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = `${p.icon} ${p.name}`;
-      select.appendChild(opt);
-    });
-
     const tableBody = document.getElementById("paramTable");
+    const searchInput = document.getElementById("searchInput");
 
+    // Hiển thị danh sách cây
+    function loadPlantList(list) {
+      select.innerHTML = "";
+      list.forEach((p, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${p.icon} ${p.name}`;
+        select.appendChild(opt);
+      });
+    }
+
+    loadPlantList(plants);
+
+    // Hiển thị thông tin cây
     function showPlant(i) {
       const p = plants[i];
       document.getElementById("plantIcon").textContent = p.icon;
@@ -258,6 +266,13 @@
     }
 
     select.addEventListener("change", e => showPlant(e.target.value));
+    searchInput.addEventListener("input", e => {
+      const keyword = e.target.value.trim().toLowerCase();
+      const filtered = plants.filter(p => p.name.toLowerCase().includes(keyword));
+      loadPlantList(filtered.length ? filtered : plants);
+      showPlant(0);
+    });
+
     showPlant(0);
 
     // 🌿 Nút áp dụng thông số — gửi sang ESP32 / IoT
@@ -272,10 +287,13 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         });
-        if (res.ok) alert(`🌿 Đã gửi thông số ${data.name} đến thiết bị IoT!`);
-        else alert("⚠️ Gửi thất bại, kiểm tra thiết bị!");
-      } catch {
-        alert("❌ Không thể kết nối đến thiết bị.");
+        if (res.ok) {
+          alert(`🌿 Đã gửi thông số "${data.name}" đến thiết bị IoT!`);
+        } else {
+          alert("⚠️ Gửi thất bại, kiểm tra thiết bị hoặc mạng WiFi!");
+        }
+      } catch (err) {
+        alert("❌ Không thể kết nối tới thiết bị. Kiểm tra IP hoặc nguồn điện.");
       }
     });
   </script>
