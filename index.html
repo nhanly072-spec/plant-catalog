@@ -1,116 +1,160 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>🌿 Bảng tra cứu chỉ số cây trồng</title>
-<style>
-  :root{
-    --bg:#eefcf0;
-    --card:#fff;
-    --accent:#14642a;
-    --muted:#616161;
-    --hover:#dff7df;
-    --shadow:0 6px 18px rgba(0,0,0,0.06);
-  }
-  html,body{height:100%;margin:0;font-family:"Segoe UI","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif;background:var(--bg);color:#0b3b2e;}
-  .wrap{max-width:980px;margin:28px auto;padding:14px;}
-  h1{text-align:center;color:var(--accent);margin:8px 0 16px;}
-  .card{background:var(--card);border-radius:14px;padding:18px;box-shadow:var(--shadow);}
-  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
-  label{font-weight:600;color:var(--accent);}
-  input.search{padding:9px 10px;border-radius:10px;border:1px solid #dbeeda;min-width:260px;transition:box-shadow .18s,border-color .18s;}
-  input.search:focus{outline:none;border-color:#78d28e;box-shadow:0 0 0 6px rgba(120,210,142,0.12);}
-  .custom-select{position:relative;min-width:250px;}
-  .select-btn{display:flex;align-items:center;gap:10px;justify-content:space-between;padding:9px 10px;border-radius:10px;border:1px solid #dbeeda;background:#fff;cursor:pointer;}
-  .select-btn .left{display:flex;align-items:center;gap:10px;}
-  .select-btn .emoji{font-size:20px}
-  .list{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e6f3e9;border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,0.08);max-height:260px;overflow:auto;z-index:50;display:none;}
-  .list.open{display:block;}
-  .item{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;}
-  .item:hover{background:var(--hover);}
-  .item .emoji{width:28px;text-align:center;font-size:18px;}
-  .item small{margin-left:auto;color:var(--muted);font-style:italic;}
-  .suggestions{position:absolute;left:0;right:0;top:calc(100% + 8px);background:#fff;border:1px solid #e1f3df;border-radius:8px;box-shadow:0 8px 20px rgba(0,0,0,0.06);max-height:220px;overflow:auto;z-index:60;display:none;}
-  .suggestions .sitem{padding:8px 10px;cursor:pointer;}
-  .suggestions .sitem:hover{background:var(--hover);}
-  .plant-block{text-align:center;margin-top:18px;}
-  .plant-block .big-emoji{font-size:46px}
-  .plant-block h2{margin:8px 0 4px;color:var(--accent);}
-  .scientific{font-style:italic;color:#2e7d32;margin-bottom:8px;}
-  table{width:100%;border-collapse:collapse;margin-top:10px;}
-  th,td{padding:12px 14px;text-align:left;border-bottom:1px solid #eef7ee;transition:background .18s;}
-  th{background:#bfe7c9;color:#0b4a2b;}
-  tbody tr:hover td{background:var(--hover);}
-  .note{margin-top:10px;font-style:italic;color:var(--muted);}
-  .edit-btn{margin-top:14px;background:#14642a;color:#fff;border:none;padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600;}
-  .edit-btn:hover{background:#0e4f22;}
-  @media (max-width:720px){
-    .controls{flex-direction:column;align-items:stretch;}
-    .custom-select,input.search{width:100%;}
-    .select-btn{justify-content:flex-start;}
-    .edit-btn{width:100%;}
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng tra cứu chỉ số cây trồng</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #eaf5e1;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px 30px;
+    }
+    h1 {
+      text-align: center;
+      color: #2e7d32;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-top: 10px;
+    }
+    .search-bar {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .search-bar input {
+      width: 80%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th {
+      background-color: #a5d6a7;
+      color: #333;
+      padding: 8px;
+      border-radius: 6px 6px 0 0;
+    }
+    td {
+      border-bottom: 1px solid #ddd;
+      padding: 8px;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .note {
+      font-style: italic;
+      color: #555;
+      margin-top: 10px;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .btn:hover {
+      background-color: #43a047;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>🌾 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
-    <div class="card">
-      <div class="controls">
-        <label>🔍 Tìm cây:</label>
-        <div style="position:relative;flex:1;min-width:220px;">
-          <input id="search" class="search" placeholder="Gõ tên cây (ví dụ: ớt, lan, cây không khí)">
-          <div id="suggestions" class="suggestions"></div>
-        </div>
-        <label>Hoặc chọn cây:</label>
-        <div class="custom-select" id="customSelect">
-          <div id="selectBtn" class="select-btn"><div class="left"><span id="selEmoji" class="emoji">🌿</span><span id="selText">Chọn cây</span></div><div class="chev">▾</div></div>
-          <div id="list" class="list"></div>
-        </div>
-      </div>
+  <div class="container">
+    <h1>🌱 BẢNG TRA CỨU CHỈ SỐ CÂY TRỒNG</h1>
 
-      <div id="plant" class="plant-block">
-        <div class="big-emoji" id="pEmoji">🌿</div>
-        <h2 id="pName">Cây trồng</h2>
-        <div class="scientific" id="pSci"></div>
-      </div>
+    <div class="search-bar">
+      <input type="text" id="searchBox" placeholder="Gõ tên cây (ví dụ: ớt, lan, cây không khí)">
+    </div>
 
-      <table>
-        <thead><tr><th>Thông số</th><th>Giá trị phù hợp</th></tr></thead>
-        <tbody id="infoBody"></tbody>
-      </table>
-      <button id="editBtn" class="edit-btn">✏️ Chỉnh sửa thông số</button>
-      <div id="note" class="note"></div>
+    <h2 id="plantName">Hoa Hồng</h2>
+    <p style="text-align:center; font-style:italic;">(Rosa spp.)</p>
+
+    <table id="plantTable">
+      <thead>
+        <tr>
+          <th>Thông số</th>
+          <th>Giá trị phù hợp</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Ánh sáng</td><td>Nhiều (trực tiếp)</td></tr>
+        <tr><td>Nhiệt độ</td><td>25–32°C</td></tr>
+        <tr><td>Độ ẩm đất</td><td>50–70%</td></tr>
+        <tr><td>pH</td><td>6.0–6.8</td></tr>
+        <tr><td>Tưới</td><td>2–3 lần/tuần</td></tr>
+      </tbody>
+    </table>
+
+    <p class="note">Ưa nắng, đất tơi xốp.</p>
+
+    <div style="text-align:center;">
+      <button id="applyBtn" class="btn">🌿 Áp dụng thông số</button>
     </div>
   </div>
 
-<script>
-const plantList=[{id:"rice",emoji:"🌾",name:"Lúa",scientific:"Oryza sativa",note:"Lúa ưa ẩm, cần nhiều nước.",info:{"Ánh sáng":"Trực tiếp – 40.000–80.000 lux","Nhiệt độ":"25–35°C","Độ ẩm đất":"70–90%","pH":"5.5–6.5","Tưới":"Giữ ngập giai đoạn sinh trưởng"}},
-{id:"tomato",emoji:"🍅",name:"Cà chua",scientific:"Solanum lycopersicum",note:"Cần đất tơi xốp, nhiều dinh dưỡng.",info:{"Ánh sáng":"6–8 giờ/ngày – 30.000–50.000 lux","Nhiệt độ":"22–28°C","Độ ẩm đất":"60–70%","pH":"6.0–6.8","Tưới":"Vừa phải, tránh úng"}}];
+  <script>
+    // ⚙️ Thay IP này bằng IP của ESP32 / IoT Gateway
+    const DEVICE_IP = "http://192.168.1.50";
 
-const selectBtn=document.getElementById('selectBtn');
-const listEl=document.getElementById('list');
-const selEmoji=document.getElementById('selEmoji');
-const selText=document.getElementById('selText');
-const searchEl=document.getElementById('search');
-const suggestions=document.getElementById('suggestions');
-const pEmoji=document.getElementById('pEmoji');
-const pName=document.getElementById('pName');
-const pSci=document.getElementById('pSci');
-const infoBody=document.getElementById('infoBody');
-const noteEl=document.getElementById('note');
-const editBtn=document.getElementById('editBtn');
-let currentIndex=null,isEditing=false;
+    document.getElementById('applyBtn').addEventListener('click', async () => {
+      const rows = document.querySelectorAll("#plantTable tbody tr");
+      let data = {};
 
-function buildList(filter=''){listEl.innerHTML='';const q=filter.trim().toLowerCase();plantList.forEach((p,i)=>{if(q&&!p.name.toLowerCase().includes(q))return;const d=document.createElement('div');d.className='item';d.dataset.idx=i;d.innerHTML=`<span class="emoji">${p.emoji}</span><span>${p.name}</span><small>${p.scientific}</small>`;d.onclick=()=>{listEl.classList.remove('open');chooseIndex(i)};listEl.appendChild(d);});}
-function chooseIndex(i){currentIndex=i;const p=plantList[i];selEmoji.textContent=p.emoji;selText.textContent=p.name;renderPlant(p);}
-function renderPlant(p){pEmoji.textContent=p.emoji;pName.textContent=p.name;pSci.textContent=p.scientific?`(${p.scientific})`:'';infoBody.innerHTML='';for(const [k,v] of Object.entries(p.info)){const tr=document.createElement('tr');tr.innerHTML=`<td>${k}</td><td>${isEditing?`<input value="${v}" data-key="${k}" style="width:100%;padding:6px;border:1px solid #cde5ce;border-radius:6px;">`:v}</td>`;infoBody.appendChild(tr);}noteEl.textContent=p.note||'';}
-selectBtn.onclick=()=>listEl.classList.toggle('open');
-document.addEventListener('click',e=>{if(!document.getElementById('customSelect').contains(e.target)&&e.target!==searchEl)listEl.classList.remove('open');});
-searchEl.oninput=e=>buildList(e.target.value);
-editBtn.onclick=()=>{if(currentIndex===null)return;const p=plantList[currentIndex];if(!isEditing){isEditing=true;editBtn.textContent='💾 Lưu thay đổi';renderPlant(p);}else{isEditing=false;editBtn.textContent='✏️ Chỉnh sửa thông số';const inputs=infoBody.querySelectorAll('input');inputs.forEach(inp=>{p.info[inp.dataset.key]=inp.value});renderPlant(p);alert('✅ Đã lưu thay đổi cho '+p.name);}};
-document.addEventListener('DOMContentLoaded',()=>{buildList();chooseIndex(0);});
-</script>
+      rows.forEach(row => {
+        const key = row.children[0].innerText.trim();
+        const value = row.children[1].innerText.trim();
+        switch (key) {
+          case "Ánh sáng": data.as = value; break;
+          case "Nhiệt độ": data.nhietdo = value.replace("°C", ""); break;
+          case "Độ ẩm đất": data.doam = value.replace("%", ""); break;
+          case "pH": data.ph = value; break;
+          case "Tưới": data.tuoi = value; break;
+        }
+      });
+
+      const tenCay = document.getElementById("plantName").innerText.trim();
+      data.cay = tenCay;
+
+      console.log("📤 Gửi dữ liệu:", data);
+
+      try {
+        const res = await fetch(`${DEVICE_IP}/apply`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          alert(`✅ Đã gửi thông số của ${data.cay} đến thiết bị IoT`);
+        } else {
+          alert("⚠️ Gửi thất bại! Kiểm tra kết nối thiết bị.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("❌ Lỗi khi gửi dữ liệu (thiết bị có thể chưa online).");
+      }
+    });
+  </script>
 </body>
 </html>
