@@ -249,7 +249,7 @@
   // Function to filter plants based on the normalized search input
   function filterPlants(keyword) {
     const normalizedKeyword = normalizeText(keyword);
-    
+
     // Only perform the match if the search term is at least 2 characters long
     if (normalizedKeyword.length < 2) {
       loadPlantList([]); // If it's too short, show no results (blank option)
@@ -261,11 +261,7 @@
     );
 
     // If no plants match, show a blank option
-    if (filteredPlants.length === 0) {
-      loadPlantList([]);  // Show no results, blank option
-    } else {
-      loadPlantList(filteredPlants);  // Show matching plants
-    }
+    loadPlantList(filteredPlants);  // Show matching plants
   }
 
   // Event listener for the search input field
@@ -277,24 +273,28 @@
   // Function to display plants in the select dropdown
   function loadPlantList(list) {
     select.innerHTML = ""; // Clear the previous options
-    
-    // Add the blank option as a placeholder at the top
-    const blankOption = document.createElement("option");
-    blankOption.value = "";
-    blankOption.textContent = "Chọn cây trồng...";  // Default text when no search or no match
-    select.appendChild(blankOption);
 
-    // Add the matching plants to the list
-    list.forEach((p, i) => {
-      const opt = document.createElement("option");
-      opt.value = i;
-      opt.textContent = `${p.icon} ${p.name}`;  // Showing both icon and name
-      select.appendChild(opt);
-    });
+    // If the list is empty, we display the blank option
+    if (list.length === 0) {
+      const blankOption = document.createElement("option");
+      blankOption.value = "";
+      blankOption.textContent = "Không tìm thấy cây...";  // "No plants found"
+      select.appendChild(blankOption);
+    } else {
+      // Otherwise, populate the dropdown with valid plants
+      list.forEach((p, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.textContent = `${p.icon} ${p.name}`;  // Showing both icon and name
+        select.appendChild(opt);
+      });
+    }
   }
 
-  // Hiển thị thông tin cây
+  // Hiển thị thông tin cây (Show plant information)
   function showPlant(i) {
+    if (i === "") return;  // If no plant is selected, do nothing
+
     const p = plants[i];
     document.getElementById("plantIcon").textContent = p.icon;
     document.getElementById("plantName").textContent = p.name;
@@ -317,11 +317,10 @@
   // Initialize with all plants (optional, but if you want it to show the full list initially)
   loadPlantList(plants);
 
-  // Show info for the first plant by default
+  // Show info for the first plant by default (in case of initial page load)
   showPlant(0);
 
-
-
+    
 
     // 🌿 Nút áp dụng thông số — gửi sang ESP32 / IoT
   const BLYNK_API_URL = "https://cloud.blynk.cc/api/v1"; // Blynk Cloud API URL
