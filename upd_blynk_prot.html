@@ -271,7 +271,7 @@
   // Event listener for the search input field
   searchInput.addEventListener("input", e => {
     const keyword = e.target.value.trim();
-    filterPlants(keyword);
+    filterPlants(keyword); // Filter based on user input
   });
 
   // Function to display plants in the select dropdown
@@ -293,35 +293,33 @@
     });
   }
 
+  // Hiển thị thông tin cây
+  function showPlant(i) {
+    const p = plants[i];
+    document.getElementById("plantIcon").textContent = p.icon;
+    document.getElementById("plantName").textContent = p.name;
+    document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
+    tableBody.innerHTML = ` 
+      <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
+      <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
+      <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
+      <tr><td>pH</td><td>${p.ph}</td></tr>
+      <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
+    `;
+    document.getElementById("note").textContent = p.note;
+  }
+
+  // Set up an event listener for when a user selects a plant
+  select.addEventListener("change", e => {
+    showPlant(e.target.value);  // Display selected plant's info
+  });
+
   // Initialize with all plants (optional, but if you want it to show the full list initially)
   loadPlantList(plants);
 
+  // Show info for the first plant by default
+  showPlant(0);
 
-    // Hiển thị thông tin cây
-    function showPlant(i) {
-      const p = plants[i];
-      document.getElementById("plantIcon").textContent = p.icon;
-      document.getElementById("plantName").textContent = p.name;
-      document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
-      tableBody.innerHTML = `
-        <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
-        <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
-        <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
-        <tr><td>pH</td><td>${p.ph}</td></tr>
-        <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
-      `;
-      document.getElementById("note").textContent = p.note;
-    }
-
-    select.addEventListener("change", e => showPlant(e.target.value));
-    searchInput.addEventListener("input", e => {
-      const keyword = e.target.value.trim().toLowerCase();
-      const filtered = plants.filter(p => p.name.toLowerCase().includes(keyword));
-      loadPlantList(filtered.length ? filtered : plants);
-      showPlant(0);
-    });
-
-    showPlant(0);
 
 
 
