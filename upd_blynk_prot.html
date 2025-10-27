@@ -237,6 +237,7 @@
     const searchInput = document.getElementById("searchInput");
 
     
+
   // Helper function to normalize text by removing accents and converting to lowercase
   function normalizeText(text) {
     return text
@@ -260,8 +261,8 @@
       normalizeText(plant.name).includes(normalizedKeyword)  // Match the whole search string
     );
 
-    // If no plants match, show a blank option
-    loadPlantList(filteredPlants);  // Show matching plants
+    // Load the filtered plants into the dropdown
+    loadPlantList(filteredPlants); 
   }
 
   // Event listener for the search input field
@@ -274,14 +275,14 @@
   function loadPlantList(list) {
     select.innerHTML = ""; // Clear the previous options
 
-    // If the list is empty, we display the blank option
+    // If no plants match, show a message in the dropdown
     if (list.length === 0) {
       const blankOption = document.createElement("option");
       blankOption.value = "";
       blankOption.textContent = "Không tìm thấy cây...";  // "No plants found"
       select.appendChild(blankOption);
     } else {
-      // Otherwise, populate the dropdown with valid plants
+      // Populate the dropdown with filtered plants
       list.forEach((p, i) => {
         const opt = document.createElement("option");
         opt.value = i;
@@ -293,7 +294,7 @@
 
   // Hiển thị thông tin cây (Show plant information)
   function showPlant(i) {
-    if (i === "") return;  // If no plant is selected, do nothing
+    if (i === "" || i === undefined) return;  // If no plant is selected, do nothing
 
     const p = plants[i];
     document.getElementById("plantIcon").textContent = p.icon;
@@ -309,7 +310,7 @@
     document.getElementById("note").textContent = p.note;
   }
 
-  // Set up an event listener for when a user selects a plant
+  // Set up an event listener for when a user selects a plant from the dropdown
   select.addEventListener("change", e => {
     showPlant(e.target.value);  // Display selected plant's info
   });
