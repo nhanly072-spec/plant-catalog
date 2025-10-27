@@ -237,7 +237,6 @@
     const searchInput = document.getElementById("searchInput");
 
     
-
   // Helper function to normalize text by removing accents and converting to lowercase
   function normalizeText(text) {
     return text
@@ -251,9 +250,9 @@
   function filterPlants(keyword) {
     const normalizedKeyword = normalizeText(keyword);
 
-    // Only perform the match if the search term is at least 2 characters long
+    // If the search term is empty or less than 2 characters, return all plants
     if (normalizedKeyword.length < 2) {
-      loadPlantList([]); // If it's too short, show no results (blank option)
+      loadPlantList(plants); // Show all plants if the search term is empty or too short
       return;
     }
 
