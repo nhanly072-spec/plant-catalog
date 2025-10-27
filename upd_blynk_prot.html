@@ -235,9 +235,9 @@
     const select = document.getElementById("plantSelect");
     const tableBody = document.getElementById("paramTable");
     const searchInput = document.getElementById("searchInput");
-    
 
-      // Helper function to normalize text by removing accents and converting to lowercase
+    
+  // Helper function to normalize text by removing accents and converting to lowercase
   function normalizeText(text) {
     return text
       .toLowerCase()                               // Convert to lowercase
@@ -274,27 +274,28 @@
     filterPlants(keyword);
   });
 
+  // Function to display plants in the select dropdown
+  function loadPlantList(list) {
+    select.innerHTML = ""; // Clear the previous options
+    
+    // Add the blank option as a placeholder at the top
+    const blankOption = document.createElement("option");
+    blankOption.value = "";
+    blankOption.textContent = "Chọn cây trồng...";  // Default text when no search or no match
+    select.appendChild(blankOption);
 
-    // Hiển thị danh sách cây
-    function loadPlantList(list) {
-       select.innerHTML = "";  // Clear existing options
-       if (list.length === 0) {
-         const opt = document.createElement("option");
-         opt.value = "";
-         opt.textContent = "Không tìm thấy cây";
-         select.appendChild(opt);
-       } else {
-         list.forEach((p, i) => {
-         const opt = document.createElement("option");
-         opt.value = i;
-         opt.textContent = `${p.icon} ${p.name}`;
-         select.appendChild(opt);
-         });
-       }
-    }
+    // Add the matching plants to the list
+    list.forEach((p, i) => {
+      const opt = document.createElement("option");
+      opt.value = i;
+      opt.textContent = `${p.icon} ${p.name}`;  // Showing both icon and name
+      select.appendChild(opt);
+    });
+  }
 
+  // Initialize with all plants (optional, but if you want it to show the full list initially)
+  loadPlantList(plants);
 
-    loadPlantList(plants);
 
     // Hiển thị thông tin cây
     function showPlant(i) {
