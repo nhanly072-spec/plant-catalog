@@ -282,11 +282,13 @@
       select.appendChild(blankOption);
     } else {
       // Populate the dropdown with filtered plants
-      list.forEach((p, i) => {
+      list.forEach(p => {
         const opt = document.createElement("option");
-        opt.value = i;
-        opt.textContent = `${p.icon} ${p.name}`;  // Showing both icon and name
+        opt.value = plants.indexOf(p);  // Use original index in the full array
+        opt.textContent = `${p.icon} ${p.name}`;
         select.appendChild(opt);
+});
+
       });
     }
   }
@@ -323,7 +325,7 @@
     
 
     // 🌿 Nút áp dụng thông số — gửi sang ESP32 / IoT
-  const BLYNK_API_URL = "https://cloud.blynk.cc/api/v1"; // Blynk Cloud API URL
+  const BLYNK_API_URL = "https://blynk.cloud/external/api"; // Blynk Cloud API URL
   const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv"; // Your Blynk project Auth Token
 
   // Virtual pins on Blynk (v1, v2, v3, etc.)
@@ -362,25 +364,35 @@
     };
 
     // Loop through each virtual pin and send the corresponding data to Blynk
-    for (const [pin, value] of Object.entries(parameters)) {
-      try {
-        const response = await fetch(`${BLYNK_API_URL}/${BLYNK_AUTH_TOKEN}/update/v${pin}?value=${encodeURIComponent(value)}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+async function sendMultipleDataToBlynk(data) {
+  const parameters = {
+    3: data.nd.split("–")[0].split('°')[0],
+    4: data.nd.split("–")[1].split('°')[0],
+    8: data.da.split("–")[0].split('%')[0],
+    9: data.da.split("–")[1].split('%')[0],
+    12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],
+    13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],
+  };
 
-        if (response.ok) {
-          console.log(`v${pin} data sent to Blynk: ${value}`);
-        } else {
-          console.error(`Failed to send data to v${pin}`);
-        }
-      } catch (err) {
-        console.error(`Error sending data to v${pin}:`, err);
+  for (const [pin, value] of Object.entries(parameters)) {
+    const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`;
+
+    try {
+      const response = await fetch(url);
+
+      const text = await response.text(); // Blynk returns "OK" or an error string
+
+      if (text.trim() === "OK") {
+        console.log(`✅ Sent to v${pin}: ${value}`);
+      } else {
+        console.error(`⚠️ Failed to send v${pin}: ${value} → ${text}`);
       }
+
+    } catch (err) {
+      console.error(`🚫 Network error on v${pin}:`, err);
     }
   }
+}
  </script>
 </body>
 </html> 
