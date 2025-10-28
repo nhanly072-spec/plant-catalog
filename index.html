@@ -231,183 +231,100 @@
         note: "Ưa sáng nhẹ, cần thông thoáng khí."
       }
     ];
-
-    const select = document.getElementById("plantSelect");
-    const tableBody = document.getElementById("paramTable");
-    const searchInput = document.getElementById("searchInput");
-
     
-  // Helper function to normalize text by removing accents and converting to lowercase
-  function normalizeText(text) {
-    return text
-      .toLowerCase()                               // Convert to lowercase
-      .normalize("NFD")                             // Decompose characters with accents
-      .replace(/[\u0300-\u036f]/g, "")              // Remove diacritics (accents)
-      .replace(/\s+/g, "");                         // Remove spaces
-  }
+ window.addEventListener("DOMContentLoaded", () => {
+      const select = document.getElementById("plantSelect");
+      const tableBody = document.getElementById("paramTable");
+      const searchInput = document.getElementById("searchInput");
+      const applyBtn = document.getElementById("applyBtn");
 
-  // Function to filter plants based on the normalized search input
-  function filterPlants(keyword) {
-    const normalizedKeyword = normalizeText(keyword);
+      // Normalize text
+      const normalizeText = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
 
-    // If the search term is empty or less than 2 characters, return all plants
-    if (normalizedKeyword.length < 2) {
-      loadPlantList(plants); // Show all plants if the search term is empty or too short
-      return;
-    }
+      // Load plants into dropdown
+      function loadPlantList(list) {
+        select.innerHTML = "";
+        if(list.length===0){
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = "Không tìm thấy cây...";
+          select.appendChild(opt);
+          return;
+        }
+        list.forEach(p => {
+          const opt = document.createElement("option");
+          opt.value = plants.indexOf(p);
+          opt.textContent = `${p.icon} ${p.name}`;
+          select.appendChild(opt);
+        });
+      }
 
-    const filteredPlants = plants.filter(plant => 
-      normalizeText(plant.name).includes(normalizedKeyword)  // Match the whole search string
-    );
+      // Show plant info
+      function showPlant(i){
+        if(i === "" || i === undefined) return;
+        const p = plants[i];
+        document.getElementById("plantIcon").textContent = p.icon;
+        document.getElementById("plantName").textContent = p.name;
+        document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
+        tableBody.innerHTML = `
+          <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
+          <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
+          <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
+          <tr><td>pH</td><td>${p.ph}</td></tr>
+          <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
+        `;
+        document.getElementById("note").textContent = p.note;
+      }
 
-    // Load the filtered plants into the dropdown
-    loadPlantList(filteredPlants); 
-  }
+      // Filter plants
+      function filterPlants(keyword){
+        const k = normalizeText(keyword);
+        if(k.length<2){ loadPlantList(plants); return; }
+        const filtered = plants.filter(p => normalizeText(p.name).includes(k));
+        loadPlantList(filtered);
+      }
 
-  // Event listener for the search input field
-  searchInput.addEventListener("input", e => {
-    const keyword = e.target.value.trim();
-    filterPlants(keyword); // Filter based on user input
-  });
+      // Event listeners
+      searchInput.addEventListener("input", e => filterPlants(e.target.value.trim()));
+      select.addEventListener("change", e => showPlant(e.target.value));
 
-  // Function to display plants in the select dropdown
-  function loadPlantList(list) {
-    select.innerHTML = ""; // Clear the previous options
+      // Blynk setup
+      const BLYNK_API_URL = "https://blynk.cloud/external/api";
+      const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv";
 
-    // If no plants match, show a message in the dropdown
-    if (list.length === 0) {
-      const blankOption = document.createElement("option");
-      blankOption.value = "";
-      blankOption.textContent = "Không tìm thấy cây...";  // "No plants found"
-      select.appendChild(blankOption);
-    } else {
-      // Populate the dropdown with filtered plants
-      list.forEach(p => {
-        const opt = document.createElement("option");
-        opt.value = plants.indexOf(p);  // Use original index in the full array
-        opt.textContent = `${p.icon} ${p.name}`;
-        select.appendChild(opt);
+      async function sendMultipleDataToBlynk(data){
+        const parameters = {
+          3: data.nd.split("–")[0].split('°')[0],
+          4: data.nd.split("–")[1].split('°')[0],
+          8: data.da.split("–")[0].split('%')[0],
+          9: data.da.split("–")[1].split('%')[0],
+          12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],
+          13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],
+        };
+        let allSuccess = true;
+        for(const [pin,value] of Object.entries(parameters)){
+          try{
+            const update = await fetch(`${BLYNK_API_URL}/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`);
+            const updateText = (await update.text()).trim();
+            if(updateText!=="OK"){ allSuccess=false; continue; }
+            const verify = await fetch(`${BLYNK_API_URL}/get?token=${BLYNK_AUTH_TOKEN}&v${pin}`);
+            const verifyText = (await verify.text()).trim();
+            if(verifyText!==value) allSuccess=false;
+          }catch(err){ console.error(err); allSuccess=false; }
+        }
+        alert(allSuccess ? `🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!` : `⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
+      }
+
+      applyBtn.addEventListener("click", () => {
+        const idx = Number(select.value);
+        if(idx==="") return alert("⚠️ Vui lòng chọn cây trước khi gửi!");
+        sendMultipleDataToBlynk(plants[idx]);
       });
-    }
-  }
 
-  // Hiển thị thông tin cây (Show plant information)
-  function showPlant(i) {
-    if (i === "" || i === undefined) return;  // If no plant is selected, do nothing
-
-    const p = plants[i];
-    document.getElementById("plantIcon").textContent = p.icon;
-    document.getElementById("plantName").textContent = p.name;
-    document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
-    tableBody.innerHTML = ` 
-      <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
-      <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
-      <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
-      <tr><td>pH</td><td>${p.ph}</td></tr>
-      <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
-    `;
-    document.getElementById("note").textContent = p.note;
-  }
-
-  // Set up an event listener for when a user selects a plant from the dropdown
-  select.addEventListener("change", e => {
-    showPlant(e.target.value);  // Display selected plant's info
-  });
-
-  // Initialize with all plants (optional, but if you want it to show the full list initially)
-  loadPlantList(plants);
-
-  // Show info for the first plant by default (in case of initial page load)
-  showPlant(0);
-
-    
-
-    // 🌿 Nút áp dụng thông số — gửi sang ESP32 / IoT
-  const BLYNK_API_URL = "https://blynk.cloud/external/api"; // Blynk Cloud API URL
-  const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv"; // Your Blynk project Auth Token
-
-  // Virtual pins on Blynk (v1, v2, v3, etc.)
-  const VIRTUAL_PINS = {
-    3: 'tempmin',    
-    4: 'tempmax',        
-    8: 'hummin',     
-    9: 'hummax', 
-    12: 'lightmin',   
-    13: 'lightmax',  
-  };
-
-  async function sendMultipleDataToBlynk(data) {
-  const parameters = {
-    3: data.nd.split("–")[0].split('°')[0],
-    4: data.nd.split("–")[1].split('°')[0],
-    8: data.da.split("–")[0].split('%')[0],
-    9: data.da.split("–")[1].split('%')[0],
-    12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],
-    13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],
-  };
-
-  const API = "https://blynk.cloud/external/api";
-  let allSuccess = true;
-
-  for (const [pin, value] of Object.entries(parameters)) {
-    const updateURL = `${API}/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`;
-    const getURL = `${API}/get?token=${BLYNK_AUTH_TOKEN}&v${pin}`;
-
-    try {
-      // 1️⃣ Send value to Blynk
-      const updateResponse = await fetch(updateURL);
-      const updateText = (await updateResponse.text()).trim();
-
-      if (updateText !== "OK") {
-        console.error(`❌ Failed to update v${pin}: ${updateText}`);
-        allSuccess = false;
-        continue; // Skip verifying if update already failed
-      }
-
-      // 2️⃣ Verify the value
-      const verifyResponse = await fetch(getURL);
-      const verifyText = (await verifyResponse.text()).trim();
-
-      if (verifyText === value) {
-        console.log(`✅ Verified v${pin} = ${verifyText}`);
-      } else {
-        console.warn(`⚠️ Mismatch on v${pin}: sent ${value}, got ${verifyText}`);
-        allSuccess = false;
-      }
-
-    } catch (err) {
-      console.error(`🚫 Network error for v${pin}:`, err);
-      allSuccess = false;
-    }
-  }
-
-  if (allSuccess) {
-    alert(`🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!`);
-  } else {
-    alert(`⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
-  }
-}
-    // 🧠 Ensure everything runs after the page is ready
-window.addEventListener("DOMContentLoaded", () => {
-  // Load full list when page first loads
-  loadPlantList(plants);
-  showPlant(0);
-
-  // Update display when user selects a plant
-  select.addEventListener("change", e => showPlant(e.target.value));
-
-  // 🔘 When "Áp dụng thông số" is clicked
-  document.getElementById("applyBtn").addEventListener("click", () => {
-    const selectedIndex = select.value;
-    if (selectedIndex === "") {
-      alert("⚠️ Vui lòng chọn cây trước khi gửi!");
-      return;
-    }
-    const selectedPlant = plants[selectedIndex];
-    sendMultipleDataToBlynk(selectedPlant);
-  });
-});
-
+      // Initial load
+      loadPlantList(plants);
+      showPlant(0);
+    });
  </script>
 </body>
 </html> 
