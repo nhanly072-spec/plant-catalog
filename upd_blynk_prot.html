@@ -212,7 +212,7 @@
         name: "Dương xỉ tổ chim",
         latin: "Asplenium nidus",
         icon: "🌱",
-        as: "Ánh sáng tán xạ, tránh nắng gắt",
+        as: "Ánh sáng tán xạ tránh nắng gắt, 2000–4000 lux",
         nd: "18–28°C",
         da: "60–80%",
         ph: "5.0–6.5",
@@ -357,8 +357,8 @@
       4: data.nd.split("–")[1].split('°')[0],      
       8: data.da.split("–")[0].split('%')[0],       
       9: data.da.split("–")[1].split('%')[0],         
-      12: data.as.split("–")[0].split(' lux')[0],    
-      13: data.as.split("–")[1].split(' lux')[0],       
+      12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],    
+      13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],       
     };
 
     // Loop through each virtual pin and send the corresponding data to Blynk
