@@ -293,45 +293,21 @@
       const BLYNK_API_URL = "https://blynk.cloud/external/api";
       const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv";
 
-      async function sendMultipleDataToBlynk(data){
-        const parameters = {
-          3: Number(data.nd.split("–")[0].split('°')[0]).trim(),
-          4: Number(data.nd.split("–")[1].split('°')[0]).trim(),
-          8: Number(data.da.split("–")[0].split('%')[0]).trim(),
-          9: Number(data.da.split("–")[1].split('%')[0]).trim(),
-          12: Number(data.as.split(", ")[1].split("–")[0].split(' lux')[0]).trim(),
-          13: Number(data.as.split(", ")[1].split("–")[1].split(' lux')[0]).trim(),
-        };
-        
-  let allSuccess = true;
-
-  for (const [pin, value] of Object.entries(parameters)) {
-    const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${value}`;
-    console.log(`Sending to Blynk: v${pin}=${value}`);
-
-    try {
-      const res = await fetch(url);
-      const text = (await res.text()).trim();
-
-      if (text === "OK") {
-        console.log(`✅ v${pin} updated successfully`);
-      } else {
-        console.error(`❌ Failed to update v${pin}:`, text);
-        allSuccess = false;
-      }
-
-    } catch (err) {
-      console.error(`🚫 Network error for v${pin}:`, err);
-      allSuccess = false;
-    }
-  }
-
-  if (allSuccess) {
-    alert(`🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!`);
-  } else {
-    alert(`⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
+async function sendMultipleDataToBlynk(data) {
+  try {
+    const resp = await fetch("/sendBlynk", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    const result = await resp.json();
+    alert(result.message);
+  } catch (err) {
+    console.error(err);
+    alert("🚫 Không thể gửi dữ liệu đến Blynk (check Node.js server)");
   }
 }
+
 
       applyBtn.addEventListener("click", () => {
         const idx = select.value;
