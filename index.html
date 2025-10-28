@@ -338,33 +338,7 @@
     13: 'lightmax',  
   };
 
-  // Handling the button click
-  document.getElementById("applyBtn").addEventListener("click", async () => {
-    const i = select.value; // Get selected plant index
-    const data = plants[i];  // Get plant data
-
-    try {
-      // Send all data to Blynk at once
-      await sendMultipleDataToBlynk(data);
-      alert(`🌿 Đã gửi thông số "${data.name}" đến Blynk!`);
-    } catch (err) {
-      alert("⚠️ Gửi thất bại, kiểm tra mạng hoặc thông số!");
-    }
-  });
-
-  // Function to send multiple data to Blynk at once
   async function sendMultipleDataToBlynk(data) {
-    const parameters = {
-      3: data.nd.split("–")[0].split('°')[0],         
-      4: data.nd.split("–")[1].split('°')[0],      
-      8: data.da.split("–")[0].split('%')[0],       
-      9: data.da.split("–")[1].split('%')[0],         
-      12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],    
-      13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],       
-    };
-
-    // Loop through each virtual pin and send the corresponding data to Blynk
-async function sendMultipleDataToBlynk(data) {
   const parameters = {
     3: data.nd.split("–")[0].split('°')[0],
     4: data.nd.split("–")[1].split('°')[0],
@@ -374,23 +348,45 @@ async function sendMultipleDataToBlynk(data) {
     13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],
   };
 
+  const API = "https://blynk.cloud/external/api";
+  let allSuccess = true;
+
   for (const [pin, value] of Object.entries(parameters)) {
-    const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`;
+    const updateURL = `${API}/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`;
+    const getURL = `${API}/get?token=${BLYNK_AUTH_TOKEN}&v${pin}`;
 
     try {
-      const response = await fetch(url);
+      // 1️⃣ Send value to Blynk
+      const updateResponse = await fetch(updateURL);
+      const updateText = (await updateResponse.text()).trim();
 
-      const text = await response.text(); // Blynk returns "OK" or an error string
+      if (updateText !== "OK") {
+        console.error(`❌ Failed to update v${pin}: ${updateText}`);
+        allSuccess = false;
+        continue; // Skip verifying if update already failed
+      }
 
-      if (text.trim() === "OK") {
-        console.log(`✅ Sent to v${pin}: ${value}`);
+      // 2️⃣ Verify the value
+      const verifyResponse = await fetch(getURL);
+      const verifyText = (await verifyResponse.text()).trim();
+
+      if (verifyText === value) {
+        console.log(`✅ Verified v${pin} = ${verifyText}`);
       } else {
-        console.error(`⚠️ Failed to send v${pin}: ${value} → ${text}`);
+        console.warn(`⚠️ Mismatch on v${pin}: sent ${value}, got ${verifyText}`);
+        allSuccess = false;
       }
 
     } catch (err) {
-      console.error(`🚫 Network error on v${pin}:`, err);
+      console.error(`🚫 Network error for v${pin}:`, err);
+      allSuccess = false;
     }
+  }
+
+  if (allSuccess) {
+    alert(`🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!`);
+  } else {
+    alert(`⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
   }
 }
  </script>
