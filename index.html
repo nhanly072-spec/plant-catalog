@@ -113,7 +113,7 @@
         name: "Lúa",
         latin: "Oryza sativa",
         icon: "🌾",
-        as: "Ánh sáng đầy đủ",
+        as: "Ánh sáng đầy đủ ~12 giờ/ngày, 10000–30000 lux",
         nd: "20–35°C",
         da: "80–90%",
         ph: "5.5–7.0",
@@ -124,7 +124,7 @@
         name: "Cà chua",
         latin: "Solanum lycopersicum",
         icon: "🍅",
-        as: "6–8 giờ sáng/ngày – 30.000–50.000 lux",
+        as: "6~8 giờ sáng/ngày, 10000–20000 lux",
         nd: "22–28°C",
         da: "60–70%",
         ph: "6.0–6.8",
@@ -135,7 +135,7 @@
         name: "Xà lách",
         latin: "Lactuca sativa",
         icon: "🥬",
-        as: "Ánh sáng trung bình, 4–6 giờ/ngày",
+        as: "4~6 giờ/ngày, 6000–8000 lux",
         nd: "15–25°C",
         da: "60–70%",
         ph: "6.0–6.8",
@@ -146,7 +146,7 @@
         name: "Ớt",
         latin: "Capsicum annuum",
         icon: "🌶️",
-        as: "Nắng 6–8 giờ/ngày",
+        as: "Nắng 6~8 giờ/ngày, 6000–12000 lux",
         nd: "25–30°C",
         da: "60–70%",
         ph: "6.0–7.0",
@@ -157,7 +157,7 @@
         name: "Dưa leo",
         latin: "Cucumis sativus",
         icon: "🥒",
-        as: "Nắng nhẹ đến trung bình",
+        as: "Nắng nhẹ đến trung bình, 6000–12000 lux",
         nd: "20–30°C",
         da: "70–80%",
         ph: "5.5–7.0",
@@ -168,7 +168,7 @@
         name: "Hoa Hồng",
         latin: "Rosa spp.",
         icon: "🌹",
-        as: "Ánh sáng mạnh, 6–8h/ngày",
+        as: "Ánh sáng mạnh 6~8h/ngày, 10000–13500 lux",
         nd: "25–32°C",
         da: "50–70%",
         ph: "6.0–6.8",
@@ -179,7 +179,7 @@
         name: "Cây không khí",
         latin: "Tillandsia spp.",
         icon: "🌿",
-        as: "Ánh sáng tán xạ, không nắng gắt",
+        as: "Ánh sáng tán xạ không nắng gắt, 1500–3000 lux",
         nd: "20–30°C",
         da: "50–70%",
         ph: "Không áp dụng (không đất)",
@@ -190,7 +190,7 @@
         name: "Phong lan Dendrobium",
         latin: "Dendrobium spp.",
         icon: "🌸",
-        as: "Ánh sáng gián tiếp 40–60%",
+        as: "Ánh sáng gián tiếp, 10700–16000 lux",
         nd: "20–30°C",
         da: "60–80%",
         ph: "5.5–6.5",
@@ -201,7 +201,7 @@
         name: "Phong lan Hồ Điệp",
         latin: "Phalaenopsis spp.",
         icon: "💮",
-        as: "Gián tiếp, 10.000–15.000 lux",
+        as: "Gián tiếp, 5400–7290 lux",
         nd: "18–28°C",
         da: "60–80%",
         ph: "5.5–6.5",
@@ -212,7 +212,7 @@
         name: "Dương xỉ tổ chim",
         latin: "Asplenium nidus",
         icon: "🌱",
-        as: "Ánh sáng tán xạ, tránh nắng gắt",
+        as: "Ánh sáng tán xạ tránh nắng gắt, 2000–4000 lux",
         nd: "18–28°C",
         da: "60–80%",
         ph: "5.0–6.5",
@@ -223,7 +223,7 @@
         name: "Phong lan Cattleya",
         latin: "Cattleya spp.",
         icon: "🌼",
-        as: "Ánh sáng trung bình, 50–70%",
+        as: "Ánh sáng gián tiếp, 16200–27000 lux",
         nd: "20–32°C",
         da: "60–80%",
         ph: "5.5–6.5",
@@ -236,66 +236,151 @@
     const tableBody = document.getElementById("paramTable");
     const searchInput = document.getElementById("searchInput");
 
-    // Hiển thị danh sách cây
-    function loadPlantList(list) {
-      select.innerHTML = "";
+    
+  // Helper function to normalize text by removing accents and converting to lowercase
+  function normalizeText(text) {
+    return text
+      .toLowerCase()                               // Convert to lowercase
+      .normalize("NFD")                             // Decompose characters with accents
+      .replace(/[\u0300-\u036f]/g, "")              // Remove diacritics (accents)
+      .replace(/\s+/g, "");                         // Remove spaces
+  }
+
+  // Function to filter plants based on the normalized search input
+  function filterPlants(keyword) {
+    const normalizedKeyword = normalizeText(keyword);
+
+    // If the search term is empty or less than 2 characters, return all plants
+    if (normalizedKeyword.length < 2) {
+      loadPlantList(plants); // Show all plants if the search term is empty or too short
+      return;
+    }
+
+    const filteredPlants = plants.filter(plant => 
+      normalizeText(plant.name).includes(normalizedKeyword)  // Match the whole search string
+    );
+
+    // Load the filtered plants into the dropdown
+    loadPlantList(filteredPlants); 
+  }
+
+  // Event listener for the search input field
+  searchInput.addEventListener("input", e => {
+    const keyword = e.target.value.trim();
+    filterPlants(keyword); // Filter based on user input
+  });
+
+  // Function to display plants in the select dropdown
+  function loadPlantList(list) {
+    select.innerHTML = ""; // Clear the previous options
+
+    // If no plants match, show a message in the dropdown
+    if (list.length === 0) {
+      const blankOption = document.createElement("option");
+      blankOption.value = "";
+      blankOption.textContent = "Không tìm thấy cây...";  // "No plants found"
+      select.appendChild(blankOption);
+    } else {
+      // Populate the dropdown with filtered plants
       list.forEach((p, i) => {
         const opt = document.createElement("option");
         opt.value = i;
-        opt.textContent = `${p.icon} ${p.name}`;
+        opt.textContent = `${p.icon} ${p.name}`;  // Showing both icon and name
         select.appendChild(opt);
       });
     }
+  }
 
-    loadPlantList(plants);
+  // Hiển thị thông tin cây (Show plant information)
+  function showPlant(i) {
+    if (i === "" || i === undefined) return;  // If no plant is selected, do nothing
 
-    // Hiển thị thông tin cây
-    function showPlant(i) {
-      const p = plants[i];
-      document.getElementById("plantIcon").textContent = p.icon;
-      document.getElementById("plantName").textContent = p.name;
-      document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
-      tableBody.innerHTML = `
-        <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
-        <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
-        <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
-        <tr><td>pH</td><td>${p.ph}</td></tr>
-        <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
-      `;
-      document.getElementById("note").textContent = p.note;
-    }
+    const p = plants[i];
+    document.getElementById("plantIcon").textContent = p.icon;
+    document.getElementById("plantName").textContent = p.name;
+    document.getElementById("plantLatin").innerHTML = `<em>${p.latin}</em>`;
+    tableBody.innerHTML = ` 
+      <tr><td>Ánh sáng</td><td>${p.as}</td></tr>
+      <tr><td>Nhiệt độ</td><td>${p.nd}</td></tr>
+      <tr><td>Độ ẩm đất</td><td>${p.da}</td></tr>
+      <tr><td>pH</td><td>${p.ph}</td></tr>
+      <tr><td>Tưới</td><td>${p.tuoi}</td></tr>
+    `;
+    document.getElementById("note").textContent = p.note;
+  }
 
-    select.addEventListener("change", e => showPlant(e.target.value));
-    searchInput.addEventListener("input", e => {
-      const keyword = e.target.value.trim().toLowerCase();
-      const filtered = plants.filter(p => p.name.toLowerCase().includes(keyword));
-      loadPlantList(filtered.length ? filtered : plants);
-      showPlant(0);
-    });
+  // Set up an event listener for when a user selects a plant from the dropdown
+  select.addEventListener("change", e => {
+    showPlant(e.target.value);  // Display selected plant's info
+  });
 
-    showPlant(0);
+  // Initialize with all plants (optional, but if you want it to show the full list initially)
+  loadPlantList(plants);
+
+  // Show info for the first plant by default (in case of initial page load)
+  showPlant(0);
+
+    
 
     // 🌿 Nút áp dụng thông số — gửi sang ESP32 / IoT
-    const DEVICE_IP = "http://192.168.1.50"; // ⚙️ thay bằng IP thiết bị IoT của bạn
+  const BLYNK_API_URL = "https://cloud.blynk.cc/api/v1"; // Blynk Cloud API URL
+  const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv"; // Your Blynk project Auth Token
 
-    document.getElementById("applyBtn").addEventListener("click", async () => {
-      const i = select.value;
-      const data = plants[i];
+  // Virtual pins on Blynk (v1, v2, v3, etc.)
+  const VIRTUAL_PINS = {
+    3: 'tempmin',    
+    4: 'tempmax',        
+    8: 'hummin',     
+    9: 'hummax', 
+    12: 'lightmin',   
+    13: 'lightmax',  
+  };
+
+  // Handling the button click
+  document.getElementById("applyBtn").addEventListener("click", async () => {
+    const i = select.value; // Get selected plant index
+    const data = plants[i];  // Get plant data
+
+    try {
+      // Send all data to Blynk at once
+      await sendMultipleDataToBlynk(data);
+      alert(`🌿 Đã gửi thông số "${data.name}" đến Blynk!`);
+    } catch (err) {
+      alert("⚠️ Gửi thất bại, kiểm tra mạng hoặc thông số!");
+    }
+  });
+
+  // Function to send multiple data to Blynk at once
+  async function sendMultipleDataToBlynk(data) {
+    const parameters = {
+      3: data.nd.split("–")[0].split('°')[0],         
+      4: data.nd.split("–")[1].split('°')[0],      
+      8: data.da.split("–")[0].split('%')[0],       
+      9: data.da.split("–")[1].split('%')[0],         
+      12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],    
+      13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],       
+    };
+
+    // Loop through each virtual pin and send the corresponding data to Blynk
+    for (const [pin, value] of Object.entries(parameters)) {
       try {
-        const res = await fetch(`${DEVICE_IP}/apply`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+        const response = await fetch(`${BLYNK_API_URL}/${BLYNK_AUTH_TOKEN}/update/v${pin}?value=${encodeURIComponent(value)}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         });
-        if (res.ok) {
-          alert(`🌿 Đã gửi thông số "${data.name}" đến thiết bị IoT!`);
+
+        if (response.ok) {
+          console.log(`v${pin} data sent to Blynk: ${value}`);
         } else {
-          alert("⚠️ Gửi thất bại, kiểm tra thiết bị hoặc mạng WiFi!");
+          console.error(`Failed to send data to v${pin}`);
         }
       } catch (err) {
-        alert("❌ Không thể kết nối tới thiết bị. Kiểm tra IP hoặc nguồn điện.");
+        console.error(`Error sending data to v${pin}:`, err);
       }
-    });
-  </script>
+    }
+  }
+ </script>
 </body>
 </html> 
