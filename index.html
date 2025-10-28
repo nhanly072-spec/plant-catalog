@@ -387,6 +387,27 @@
     alert(`⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
   }
 }
+    // 🧠 Ensure everything runs after the page is ready
+window.addEventListener("DOMContentLoaded", () => {
+  // Load full list when page first loads
+  loadPlantList(plants);
+  showPlant(0);
+
+  // Update display when user selects a plant
+  select.addEventListener("change", e => showPlant(e.target.value));
+
+  // 🔘 When "Áp dụng thông số" is clicked
+  document.getElementById("applyBtn").addEventListener("click", () => {
+    const selectedIndex = select.value;
+    if (selectedIndex === "") {
+      alert("⚠️ Vui lòng chọn cây trước khi gửi!");
+      return;
+    }
+    const selectedPlant = plants[selectedIndex];
+    sendMultipleDataToBlynk(selectedPlant);
+  });
+});
+
  </script>
 </body>
 </html> 
