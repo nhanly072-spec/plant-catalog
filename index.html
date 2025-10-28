@@ -107,6 +107,7 @@
   </div>
 
   <script>
+     window.addEventListener("DOMContentLoaded", () => {
     // 🌱 Danh sách cây trồng
     const plants = [
       {
@@ -187,7 +188,7 @@
         note: "Không cần đất, chỉ cần độ ẩm và lưu thông khí."
       },
       {
-        name: "Phong lan Dendrobium",
+        name: "Lan hoàng thảo",
         latin: "Dendrobium spp.",
         icon: "🌸",
         as: "Ánh sáng gián tiếp, 10700–16000 lux",
@@ -220,7 +221,7 @@
         note: "Ưa mát, trồng nơi có độ ẩm cao."
       },
       {
-        name: "Phong lan Cattleya",
+        name: "Cát lan",
         latin: "Cattleya spp.",
         icon: "🌼",
         as: "Ánh sáng gián tiếp, 16200–27000 lux",
@@ -232,7 +233,7 @@
       }
     ];
     
- window.addEventListener("DOMContentLoaded", () => {
+
       const select = document.getElementById("plantSelect");
       const tableBody = document.getElementById("paramTable");
       const searchInput = document.getElementById("searchInput");
@@ -294,29 +295,46 @@
 
       async function sendMultipleDataToBlynk(data){
         const parameters = {
-          3: data.nd.split("–")[0].split('°')[0],
-          4: data.nd.split("–")[1].split('°')[0],
-          8: data.da.split("–")[0].split('%')[0],
-          9: data.da.split("–")[1].split('%')[0],
-          12: data.as.split(", ")[1].split("–")[0].split(' lux')[0],
-          13: data.as.split(", ")[1].split("–")[1].split(' lux')[0],
+          3: Number(data.nd.split("–")[0].split('°')[0]).trim(),
+          4: Number(data.nd.split("–")[1].split('°')[0]).trim(),
+          8: Number(data.da.split("–")[0].split('%')[0]).trim(),
+          9: Number(data.da.split("–")[1].split('%')[0]).trim(),
+          12: Number(data.as.split(", ")[1].split("–")[0].split(' lux')[0]).trim(),
+          13: Number(data.as.split(", ")[1].split("–")[1].split(' lux')[0]).trim(),
         };
-        let allSuccess = true;
-        for(const [pin,value] of Object.entries(parameters)){
-          try{
-            const update = await fetch(`${BLYNK_API_URL}/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${encodeURIComponent(value)}`);
-            const updateText = (await update.text()).trim();
-            if(updateText!=="OK"){ allSuccess=false; continue; }
-            const verify = await fetch(`${BLYNK_API_URL}/get?token=${BLYNK_AUTH_TOKEN}&v${pin}`);
-            const verifyText = (await verify.text()).trim();
-            if(verifyText!==value) allSuccess=false;
-          }catch(err){ console.error(err); allSuccess=false; }
-        }
-        alert(allSuccess ? `🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!` : `⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
+        
+  let allSuccess = true;
+
+  for (const [pin, value] of Object.entries(parameters)) {
+    const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${value}`;
+    console.log(`Sending to Blynk: v${pin}=${value}`);
+
+    try {
+      const res = await fetch(url);
+      const text = (await res.text()).trim();
+
+      if (text === "OK") {
+        console.log(`✅ v${pin} updated successfully`);
+      } else {
+        console.error(`❌ Failed to update v${pin}:`, text);
+        allSuccess = false;
       }
 
+    } catch (err) {
+      console.error(`🚫 Network error for v${pin}:`, err);
+      allSuccess = false;
+    }
+  }
+
+  if (allSuccess) {
+    alert(`🌿 Tất cả thông số của "${data.name}" đã gửi thành công tới Blynk!`);
+  } else {
+    alert(`⚠️ Một số thông số "${data.name}" chưa gửi được — kiểm tra console.`);
+  }
+}
+
       applyBtn.addEventListener("click", () => {
-        const idx = Number(select.value);
+        const idx = select.value;
         if(idx==="") return alert("⚠️ Vui lòng chọn cây trước khi gửi!");
         sendMultipleDataToBlynk(plants[idx]);
       });
