@@ -261,25 +261,21 @@ function loadPlantList(list) {
     });
   }
 
-  // ✅ Always add hidden blank option at the bottom
+  // Always add blank option at the very bottom
   const blankOpt = document.createElement("option");
-  blankOpt.value = "";
-  blankOpt.textContent = ""; // empty
+  blankOpt.value = "blank"; // sentinel value
+  blankOpt.textContent = ""; // visually blank
   select.appendChild(blankOpt);
+  
+  // Highlight first real plant, not blank
+  if (list.length > 0) select.selectedIndex = 0;
 
-  // ✅ Make sure first real plant is highlighted
-  if (list.length > 0) {
-    select.selectedIndex = 0;
-  }
-
-  select.disabled = false; // force refresh
+  select.disabled = false;
 }
-
-
 
       // Show plant info
       function showPlant(i){
-        if(i === "" || i === undefined) return;
+        if(i === "" || i === undefined|| i = "blank") return;
         const p = plants[i];
         document.getElementById("plantIcon").textContent = p.icon;
         document.getElementById("plantName").textContent = p.name;
