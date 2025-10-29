@@ -258,7 +258,6 @@
            opt.textContent = "Không tìm thấy cây..."; 
            opt.disabled = true;
            select.appendChild(opt);
-           select.disabled = false;
            return; } 
          
          list.forEach(p => { 
@@ -267,8 +266,6 @@
            opt.textContent = ${p.icon} ${p.name}; 
            select.appendChild(opt);
            });
-          select.disabled = false;
-          select.selectedIndex = 0; // dummy always selected first
          } // Show plant info 
 
        function filterPlants(keyword){ 
