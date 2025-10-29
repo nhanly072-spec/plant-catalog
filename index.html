@@ -250,11 +250,13 @@ function loadPlantList(list) {
     opt.value = "";
     opt.textContent = "Không tìm thấy cây...";
     opt.disabled = true;
+    opt.selected = true;
     select.appendChild(opt);
     select.disabled = true;
     return;
   }
 
+  // ✅ Populate dropdown
   list.forEach(p => {
     const opt = document.createElement("option");
     opt.value = plants.indexOf(p);
@@ -262,11 +264,9 @@ function loadPlantList(list) {
     select.appendChild(opt);
   });
 
-  // ✅ Ensure dropdown stays interactive
+  // ✅ Make sure dropdown is active and looks normal
   select.disabled = false;
-
-  // ✅ Don’t autoselect visually, but keep it active
-  select.selectedIndex = -1;
+  select.selectedIndex = 0; // show first option normally
 }
 
 function filterPlants(keyword) {
@@ -279,14 +279,16 @@ function filterPlants(keyword) {
   const filtered = plants.filter(p =>
     normalizeText(p.name).includes(k)
   );
+
   loadPlantList(filtered);
 
-  // ✅ If only one result → still clickable and selectable
+  // ✅ Keep it clickable even with 1 result
+  select.disabled = false;
   if (filtered.length === 1) {
-    select.disabled = false;
-    select.selectedIndex = -1; // don’t auto-highlight
+    select.selectedIndex = 0; // visually show it
   }
 }
+
 
 
 
