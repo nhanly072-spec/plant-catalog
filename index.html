@@ -245,20 +245,27 @@
       // Load plants into dropdown
       function loadPlantList(list) {
         select.innerHTML = "";
-        if(list.length===0){
-          const opt = document.createElement("option");
-          opt.value = "";
-          opt.textContent = "Không tìm thấy cây...";
-          select.appendChild(opt);
-          return;
-        }
+         if (list.length === 0) {
+         const opt = document.createElement("option");
+         opt.value = "";
+         opt.textContent = "Không tìm thấy cây...";
+         opt.disabled = true; // grey placeholder
+         select.appendChild(opt);
+         return;
+         }
+
         list.forEach(p => {
-          const opt = document.createElement("option");
-          opt.value = plants.indexOf(p);
-          opt.textContent = `${p.icon} ${p.name}`;
-          select.appendChild(opt);
+         const opt = document.createElement("option");
+         opt.value = plants.indexOf(p);
+         opt.textContent = `${p.icon} ${p.name}`;
+         select.appendChild(opt);
         });
-      }
+
+        // 👉 Ensure dropdown remains focusable/selectable
+       select.disabled = false;
+       select.selectedIndex = -1; // no preselection
+       }
+
 
       // Show plant info
       function showPlant(i){
@@ -278,12 +285,17 @@
       }
 
       // Filter plants
-      function filterPlants(keyword){
-        const k = normalizeText(keyword);
-        if(k.length<2){ loadPlantList(plants); return; }
-        const filtered = plants.filter(p => normalizeText(p.name).includes(k));
-        loadPlantList(filtered);
-      }
+      function filterPlants(keyword) {
+       const k = normalizeText(keyword);
+       if (k.length < 2) {
+        loadPlantList(plants);
+        return;
+       }
+      const filtered = plants.filter(p => normalizeText(p.name).includes(k));
+      loadPlantList(filtered);
+      select.disabled = false; // ensure active even with one option
+      }  
+
 
       // Event listeners
       searchInput.addEventListener("input", e => filterPlants(e.target.value.trim()));
