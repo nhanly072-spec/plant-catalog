@@ -242,31 +242,27 @@
       // Normalize text
       const normalizeText = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
 
-// Load plants into dropdown
+// Load plants into dropdown 
        function loadPlantList(list) { 
          select.innerHTML = ""; 
-         if(list.length===0){
+         if(list.length===0){ 
            const opt = document.createElement("option"); 
            opt.value = ""; 
-           opt.textContent = "Không tìm thấy cây..."; 
-           opt.disabled = true;
-           select.appendChild(opt);
-           return; } 
+           opt.textContent = "Không tìm thấy cây...";
+           select.appendChild(opt); return; } 
          
          list.forEach(p => { 
            const opt = document.createElement("option"); 
            opt.value = plants.indexOf(p); 
            opt.textContent = ${p.icon} ${p.name}; 
-           select.appendChild(opt);
-           });
-         } // Show plant info 
-
-       function filterPlants(keyword){ 
-         const k = normalizeText(keyword); 
-         if(k.length<2){
-           loadPlantList(plants); return; } 
-         const filtered = plants.filter(p => normalizeText(p.name).includes(k)); 
-         loadPlantList(filtered); }
+           select.appendChild(opt); }); } // Show plant info 
+      function filterPlants(keyword){ 
+        const k = normalizeText(keyword); 
+        if(k.length<2){ 
+          loadPlantList(plants); 
+                       return; }
+        const filtered = plants.filter(p => normalizeText(p.name).includes(k)); 
+        loadPlantList(filtered); }
 
 
       // Show plant info
