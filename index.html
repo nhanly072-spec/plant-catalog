@@ -245,16 +245,31 @@
 // Load plants into dropdown
        function loadPlantList(list) { 
          select.innerHTML = ""; 
+         const blankOpt = document.createElement("option");
+         blankOpt.value = "";
+         blankOpt.textContent = "— Chọn cây —";
+         blankOpt.disabled = false;
+         blankOpt.selected = true;
+         select.appendChild(blankOpt);
+
          if(list.length===0){
            const opt = document.createElement("option"); 
            opt.value = ""; 
            opt.textContent = "Không tìm thấy cây..."; 
-           select.appendChild(opt); return; } 
+           opt.disabled = true;
+           select.appendChild(opt);
+           select.disabled = false;
+           return; } 
+         
          list.forEach(p => { 
            const opt = document.createElement("option"); 
            opt.value = plants.indexOf(p); 
            opt.textContent = ${p.icon} ${p.name}; 
-           select.appendChild(opt); }); } // Show plant info 
+           select.appendChild(opt);
+           });
+          select.disabled = false;
+          select.selectedIndex = 0; // dummy always selected first
+         } // Show plant info 
 
        function filterPlants(keyword){ 
          const k = normalizeText(keyword); 
