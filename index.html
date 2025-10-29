@@ -245,13 +245,6 @@
 // Load plants into dropdown
        function loadPlantList(list) { 
          select.innerHTML = ""; 
-         const blankOpt = document.createElement("option");
-         blankOpt.value = "";
-         blankOpt.textContent = "— Chọn cây —";
-         blankOpt.disabled = false;
-         blankOpt.selected = true;
-         select.appendChild(blankOpt);
-
          if(list.length===0){
            const opt = document.createElement("option"); 
            opt.value = ""; 
