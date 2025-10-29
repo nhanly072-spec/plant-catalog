@@ -245,33 +245,36 @@
 function loadPlantList(list) {
   select.innerHTML = "";
 
-  if (list.length === 0) {
+  // Add real plant options
+  list.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = plants.indexOf(p);
+    opt.textContent = `${p.icon} ${p.name}`;
+    select.appendChild(opt);
+  });
+
+  // Always add blank option at bottom
+  const blankOpt = document.createElement("option");
+  blankOpt.value = ""; // keep value empty string
+  blankOpt.textContent = ""; // visually blank
+  select.appendChild(blankOpt);
+
+  // Highlight the first real plant (not the blank)
+  if (list.length > 0) {
+    select.selectedIndex = 0;
+    showPlant(select.value); // show the first plant info
+  } else {
+    select.selectedIndex = 0; // blank will be selected if list empty
     const opt = document.createElement("option");
     opt.value = "";
     opt.textContent = "Không tìm thấy cây...";
     opt.disabled = true;
     select.appendChild(opt);
-    select.disabled = false; // still clickable
-  } else {
-    list.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = plants.indexOf(p);
-      opt.textContent = `${p.icon} ${p.name}`;
-      select.appendChild(opt);
-    });
   }
-
-  // Always add blank option at the very bottom
-  const blankOpt = document.createElement("option");
-  blankOpt.value = ""; // sentinel value
-  blankOpt.textContent = ""; // visually blank
-  select.appendChild(blankOpt);
-  
-  // Highlight first real plant, not blank
- select.selectedIndex = 0;
 
   select.disabled = false;
 }
+
 
       // Show plant info
       function showPlant(i){
