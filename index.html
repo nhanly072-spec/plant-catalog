@@ -263,7 +263,7 @@ function loadPlantList(list) {
 
   // Always add blank option at the very bottom
   const blankOpt = document.createElement("option");
-  blankOpt.value = "blank"; // sentinel value
+  blankOpt.value = ""; // sentinel value
   blankOpt.textContent = ""; // visually blank
   select.appendChild(blankOpt);
   
@@ -275,7 +275,7 @@ function loadPlantList(list) {
 
       // Show plant info
       function showPlant(i){
-        if(i === "" || i === undefined|| i = "blank") return;
+        if(i === "" || i === undefined) return;
         const p = plants[i];
         document.getElementById("plantIcon").textContent = p.icon;
         document.getElementById("plantName").textContent = p.name;
