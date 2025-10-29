@@ -242,55 +242,26 @@
       // Normalize text
       const normalizeText = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
 
-function loadPlantList(list) {
-  select.innerHTML = "";
+// Load plants into dropdown
+       function loadPlantList(list) { 
+         select.innerHTML = ""; 
+         if(list.length===0){
+           const opt = document.createElement("option"); 
+           opt.value = ""; 
+           opt.textContent = "Không tìm thấy cây..."; 
+           select.appendChild(opt); return; } 
+         list.forEach(p => { 
+           const opt = document.createElement("option"); 
+           opt.value = plants.indexOf(p); 
+           opt.textContent = ${p.icon} ${p.name}; 
+           select.appendChild(opt); }); } // Show plant info 
 
-  if (list.length === 0) {
-    const opt = document.createElement("option");
-    opt.value = "";
-    opt.textContent = "Không tìm thấy cây...";
-    opt.disabled = true;
-    opt.selected = true;
-    select.appendChild(opt);
-    select.disabled = true;
-    return;
-  }
-
-  // ✅ Populate dropdown
-  list.forEach(p => {
-    const opt = document.createElement("option");
-    opt.value = plants.indexOf(p);
-    opt.textContent = `${p.icon} ${p.name}`;
-    select.appendChild(opt);
-  });
-
-  // ✅ Make sure dropdown is active and looks normal
-  select.disabled = false;
-  select.selectedIndex = 0; // show first option normally
-}
-
-function filterPlants(keyword) {
-  const k = normalizeText(keyword);
-  if (k.length < 2) {
-    loadPlantList(plants);
-    return;
-  }
-
-  const filtered = plants.filter(p =>
-    normalizeText(p.name).includes(k)
-  );
-
-  loadPlantList(filtered);
-
-  // ✅ Keep it clickable even with 1 result
-  select.disabled = false;
-  if (filtered.length === 1) {
-    select.selectedIndex = 0; // visually show it
-  }
-}
-
-
-
+       function filterPlants(keyword){ 
+         const k = normalizeText(keyword); 
+         if(k.length<2){
+           loadPlantList(plants); return; } 
+         const filtered = plants.filter(p => normalizeText(p.name).includes(k)); 
+         loadPlantList(filtered); }
 
 
       // Show plant info
