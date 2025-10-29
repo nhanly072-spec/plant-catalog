@@ -242,22 +242,40 @@
       const normalizeText = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
 
       // Load plants into dropdown
-      function loadPlantList(list) {
-        select.innerHTML = "";
-        if(list.length===0){
-          const opt = document.createElement("option");
-          opt.value = "";
-          opt.textContent = "Không tìm thấy cây...";
-          select.appendChild(opt);
-          return;
-        }
-        list.forEach(p => {
-          const opt = document.createElement("option");
-          opt.value = plants.indexOf(p);
-          opt.textContent = `${p.icon} ${p.name}`;
-          select.appendChild(opt);
-        });
-      }
+function loadPlantList(list) {
+  select.innerHTML = "";
+
+  if (list.length === 0) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Không tìm thấy cây...";
+    opt.disabled = true;
+    select.appendChild(opt);
+    select.disabled = false; // still clickable
+  } else {
+    list.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = plants.indexOf(p);
+      opt.textContent = `${p.icon} ${p.name}`;
+      select.appendChild(opt);
+    });
+  }
+
+  // ✅ Always add hidden blank option at the bottom
+  const blankOpt = document.createElement("option");
+  blankOpt.value = "";
+  blankOpt.textContent = ""; // empty
+  select.appendChild(blankOpt);
+
+  // ✅ Make sure first real plant is highlighted
+  if (list.length > 0) {
+    select.selectedIndex = 0;
+  }
+
+  select.disabled = false; // force refresh
+}
+
+
 
       // Show plant info
       function showPlant(i){
