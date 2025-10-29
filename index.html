@@ -243,28 +243,49 @@
       const normalizeText = text => text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "");
 
       // Load plants into dropdown
-      function loadPlantList(list) {
-        select.innerHTML = "";
-         if (list.length === 0) {
-         const opt = document.createElement("option");
-         opt.value = "";
-         opt.textContent = "Không tìm thấy cây...";
-         opt.disabled = true; // grey placeholder
-         select.appendChild(opt);
-         return;
-         }
+     function loadPlantList(list) {
+       select.innerHTML = "";
 
-        list.forEach(p => {
-         const opt = document.createElement("option");
-         opt.value = plants.indexOf(p);
-         opt.textContent = `${p.icon} ${p.name}`;
-         select.appendChild(opt);
-        });
+  if (list.length === 0) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "Không tìm thấy cây...";
+    opt.disabled = true;
+    select.appendChild(opt);
+    select.disabled = true;
+    return;
+  }
 
-        // 👉 Ensure dropdown remains focusable/selectable
-       select.disabled = false;
-       select.selectedIndex = -1; // no preselection
-       }
+  list.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = plants.indexOf(p);
+    opt.textContent = `${p.icon} ${p.name}`;
+    select.appendChild(opt);
+  });
+
+  // ✅ Force refresh of dropdown to stay clickable
+  select.disabled = false;
+  select.selectedIndex = 0; // highlight first (not -1!)
+}
+
+// Filter plants
+function filterPlants(keyword) {
+  const k = normalizeText(keyword);
+  if (k.length < 2) {
+    loadPlantList(plants);
+    return;
+  }
+
+  const filtered = plants.filter(p => normalizeText(p.name).includes(k));
+  loadPlantList(filtered);
+
+  // ✅ If only one result, keep it selectable
+  if (filtered.length === 1) {
+    select.disabled = false;
+    select.selectedIndex = 0;
+  }
+}
+
 
 
       // Show plant info
@@ -283,18 +304,6 @@
         `;
         document.getElementById("note").textContent = p.note;
       }
-
-      // Filter plants
-      function filterPlants(keyword) {
-       const k = normalizeText(keyword);
-       if (k.length < 2) {
-        loadPlantList(plants);
-        return;
-       }
-      const filtered = plants.filter(p => normalizeText(p.name).includes(k));
-      loadPlantList(filtered);
-      select.disabled = false; // ensure active even with one option
-      }  
 
 
       // Event listeners
