@@ -307,7 +307,6 @@ function loadPlantList(list) {
 
       // Blynk setup
       const BLYNK_API_URL = "https://blynk.cloud/external/api";
-      const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv";
 
 async function sendMultipleDataToBlynk(data) {
   try {
@@ -328,9 +327,13 @@ async function sendMultipleDataToBlynk(data) {
       applyBtn.addEventListener("click", () => {
         const idx = select.value;
         if(idx==="") return alert("⚠️ Vui lòng chọn cây trước khi gửi!");
-        sendMultipleDataToBlynk(plants[idx]);
+        
+        applyBtn.disabled = true;
+        await sendMultipleDataToBlynk(plants[idx]);
+        applyBtn.disabled = false;
       });
 
+       
       // Initial load
       loadPlantList(plants);
       showPlant(0);
