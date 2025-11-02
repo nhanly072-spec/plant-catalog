@@ -1,13 +1,16 @@
-//import fetch from "node-fetch";
-console.log("Received:", req.body);
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
-
+  console.log("Received:", req.body);
   const BLYNK_AUTH_TOKEN = process.env.BLYNK_AUTH_TOKEN;
+  if (!BLYNK_AUTH_TOKEN) {
+    return res.status(500).json({ message: "Missing Blynk token in environment vars" });
+  }
+  
   const data = req.body;
+    // Replace en dashes (–) with normal hyphens (-)
+  const fix = (str) => str.replace(/–/g, "-");
 
   const parameters = {
     3: Number(data.nd.split("–")[0].split('°')[0].trim()),
