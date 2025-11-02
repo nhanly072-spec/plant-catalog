@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const BLYNK_AUTH_TOKEN = "QhaE1GqAW43iph5gu06laqEN7EcyEpFv";
+  const BLYNK_AUTH_TOKEN = process.env.BLYNK_AUTH_TOKEN;
   const data = req.body;
 
   const parameters = {
