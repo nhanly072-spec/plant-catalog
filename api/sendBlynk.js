@@ -16,16 +16,14 @@ export default async function handler(req, res) {
   }
   
   const data = req.body;
-    // Replace en dashes (–) with normal hyphens (-)
-  const fix = (str) => str.replace(/–/g, "-");
 
   const parameters = {
-    3: Number(data.nd.split("-")[0].split('°')[0].trim()),
-    4: Number(data.nd.split("-")[1].split('°')[0].trim()),
-    8: Number(data.da.split("-")[0].split('%')[0].trim()),
-    9: Number(data.da.split("-")[1].split('%')[0].trim()),
-    12: Number(data.as.split(", ")[1].split("-")[0].split(' lux')[0].trim()),
-    13: Number(data.as.split(", ")[1].split("-")[1].split(' lux')[0].trim()),
+    3: Number(data.nd.split("–")[0].split('°')[0].trim()),
+    4: Number(data.nd.split("–")[1].split('°')[0].trim()),
+    8: Number(data.da.split("–")[0].split('%')[0].trim()),
+    9: Number(data.da.split("–")[1].split('%')[0].trim()),
+    12: Number(data.as.split(", ")[1].split("–")[0].split(' lux')[0].trim()),
+    13: Number(data.as.split(", ")[1].split("–")[1].split(' lux')[0].trim()),
   };
 
   let allSuccess = true;
