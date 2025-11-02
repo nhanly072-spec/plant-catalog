@@ -324,7 +324,7 @@ async function sendMultipleDataToBlynk(data) {
 }
 
 
-      applyBtn.addEventListener("click", () => {
+      applyBtn.addEventListener("click", async () => {
         const idx = select.value;
         if(idx==="") return alert("⚠️ Vui lòng chọn cây trước khi gửi!");
         
