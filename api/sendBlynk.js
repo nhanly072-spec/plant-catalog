@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       const text = await resp.text();
       if (text.trim() !== "OK") allSuccess = false;
     } catch {
-      console.error(`❌ Error sending to v${pin}:`, e.message);
+      console.error(`❌ Error sending to v${pin}:`, error);
       allSuccess = false;
     }
   }
