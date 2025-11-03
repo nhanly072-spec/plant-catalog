@@ -29,13 +29,13 @@ export default async function handler(req, res) {
   let allSuccess = true;
 
   for (const [pin, value] of Object.entries(parameters)) {
-    const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&v${pin}=${value}`;
+  const url = `https://blynk.cloud/external/api/update?token=${BLYNK_AUTH_TOKEN}&pin=V${pin}&value=${value}`;
     try {
       const resp = await fetch(url);
       const text = await resp.text();
       if (text.trim() !== "OK") allSuccess = false;
-    } catch {
-      console.error(`❌ Error sending to v${pin}:`, error);
+    } catch (e) {
+      console.error(`❌ Error sending to v${pin}:`, e);
       allSuccess = false;
     }
   }
